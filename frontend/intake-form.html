@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Solution Generator - Generador de Agentes IA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen">
+    <div class="container mx-auto px-4 py-12 max-w-4xl">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-white mb-4">🤖 AI Solution Generator</h1>
+            <p class="text-xl text-purple-200">Crea tu agente de IA personalizado en minutos</p>
+        </div>
+
+        <!-- Form Container -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20">
+            <form id="intakeForm" class="space-y-6">
+                
+                <!-- Información del Negocio -->
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-bold text-white border-b border-purple-400 pb-2">📊 Tu Negocio</h2>
+                    
+                    <div>
+                        <label class="block text-purple-200 font-semibold mb-2">Nombre del negocio</label>
+                        <input type="text" id="businessName" required
+                            class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            placeholder="Ej: Clínica Dental Sonrisa">
+                    </div>
+
+                    <div>
+                        <label class="block text-purple-200 font-semibold mb-2">Industria/Sector</label>
+                        <select id="industry" required
+                            class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <option value="">Selecciona...</option>
+                            <option value="salud">Salud y Medicina</option>
+                            <option value="ecommerce">E-commerce / Tienda Online</option>
+                            <option value="inmobiliaria">Inmobiliaria</option>
+                            <option value="restaurante">Restaurante / Hostelería</option>
+                            <option value="servicios">Servicios Profesionales</option>
+                            <option value="educacion">Educación / Formación</option>
+                            <option value="fitness">Fitness / Gym</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-purple-200 font-semibold mb-2">Describe tu negocio brevemente</label>
+                        <textarea id="businessDescription" rows="3" required
+                            class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            placeholder="¿Qué haces? ¿A quién sirves?"></textarea>
+                    </div>
+                </div>
+
+                <!-- Tipo de Solución -->
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-bold text-white border-b border-purple-400 pb-2">🎯 ¿Qué necesitas?</h2>
+                    
+                    <div class="space-y-3">
+                        <label class="flex items-center space-x-3 p-4 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer transition">
+                            <input type="checkbox" name="solutionType" value="whatsapp-agent" class="w-5 h-5 text-purple-600">
+                            <div>
+                                <span class="text-white font-semibold">💬 Agente de IA para WhatsApp</span>
+                                <p class="text-purple-300 text-sm">Responde automáticamente, agenda citas, califica leads</p>
+                            </div>
+                        </label>
+
+                        <label class="flex items-center space-x-3 p-4 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer transition">
+                            <input type="checkbox" name="solutionType" value="voice-agent" class="w-5 h-5 text-purple-600">
+                            <div>
+                                <span class="text-white font-semibold">📞 Agente de IA de Voz (Llamadas)</span>
+                                <p class="text-purple-300 text-sm">Llamadas entrantes/salientes automatizadas con IA</p>
+                            </div>
+                        </label>
+
+                        <label class="flex items-center space-x-3 p-4 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer transition">
+                            <input type="checkbox" name="solutionType" value="web-chatbot" class="w-5 h-5 text-purple-600">
+                            <div>
+                                <span class="text-white font-semibold">🌐 Chatbot Web (Básico)</span>
+                                <p class="text-purple-300 text-sm">Widget de chat para tu sitio web</p>
+                            </div>
+                        </label>
+
+                        <label class="flex items-center space-x-3 p-4 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer transition">
+                            <input type="checkbox" name="solutionType" value="landing-page" class="w-5 h-5 text-purple-600">
+                            <div>
+                                <span class="text-white font-semibold">🎨 Landing Page con IA</span>
+                                <p class="text-purple-300 text-sm">Página de captura con agente integrado</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Objetivos -->
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-bold text-white border-b border-purple-400 pb-2">🎪 ¿Qué quieres lograr?</h2>
+                    
+                    <div class="space-y-3">
+                        <label class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer transition">
+                            <input type="checkbox" name="goals" value="lead-qualification" class="w-4 h-4 text-purple-600">
+                            <span class="text-white">Calificar leads automáticamente</span>
+                        </label>
+
+                        <label class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer transition">
+                            <input type="checkbox" name="goals" value="appointment-booking" class="w-4 h-4 text-purple-600">
+                            <span class="text-white">Agendar citas/reservas</span>
+                        </label>
+
+                        <label class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer transition">
+                            <input type="checkbox" name="goals" value="customer-support" class="w-4 h-4 text-purple-600">
+                            <span class="text-white">Soporte al cliente 24/7</span>
+                        </label>
+
+                        <label class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer transition">
+                            <input type="checkbox" name="goals" value="sales" class="w-4 h-4 text-purple-600">
+                            <span class="text-white">Cerrar ventas / Conversiones</span>
+                        </label>
+
+                        <label class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer transition">
+                            <input type="checkbox" name="goals" value="info-collection" class="w-4 h-4 text-purple-600">
+                            <span class="text-white">Recopilar información de clientes</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Volumen y Presupuesto -->
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-bold text-white border-b border-purple-400 pb-2">📈 Volumen y Presupuesto</h2>
+                    
+                    <div>
+                        <label class="block text-purple-200 font-semibold mb-2">¿Cuántas conversaciones/llamadas esperas al mes?</label>
+                        <select id="volume" required
+                            class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <option value="low">Menos de 500</option>
+                            <option value="medium">500 - 2,000</option>
+                            <option value="high">2,000 - 10,000</option>
+                            <option value="enterprise">Más de 10,000</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-purple-200 font-semibold mb-2">Presupuesto mensual</label>
+                        <select id="budget" required
+                            class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <option value="basic">€200 - €500</option>
+                            <option value="pro">€500 - €1,500</option>
+                            <option value="premium">€1,500 - €5,000</option>
+                            <option value="enterprise">€5,000+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Información Adicional -->
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-bold text-white border-b border-purple-400 pb-2">💡 Info Adicional</h2>
+                    
+                    <div>
+                        <label class="block text-purple-200 font-semibold mb-2">¿Qué más debemos saber?</label>
+                        <textarea id="additionalInfo" rows="4"
+                            class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            placeholder="Integraciones necesarias, funcionalidades específicas, casos de uso..."></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-purple-200 font-semibold mb-2">Email de contacto</label>
+                        <input type="email" id="email" required
+                            class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            placeholder="tu@email.com">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="submitBtn"
+                    class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-4 px-6 rounded-lg hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition duration-200 shadow-lg">
+                    🚀 Generar Mi Solución IA
+                </button>
+            </form>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="hidden text-center py-8">
+                <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-purple-500 mx-auto mb-4"></div>
+                <p class="text-white text-lg">Analizando tus necesidades y generando tu solución personalizada...</p>
+            </div>
+
+            <!-- Results -->
+            <div id="results" class="hidden mt-8 space-y-6">
+                <h2 class="text-3xl font-bold text-white text-center mb-6">✨ Tu Solución Personalizada</h2>
+                <div id="resultContent" class="bg-white/5 rounded-lg p-6 text-white"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('intakeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = {
+                businessName: document.getElementById('businessName').value,
+                industry: document.getElementById('industry').value,
+                businessDescription: document.getElementById('businessDescription').value,
+                solutionTypes: Array.from(document.querySelectorAll('input[name="solutionType"]:checked')).map(el => el.value),
+                goals: Array.from(document.querySelectorAll('input[name="goals"]:checked')).map(el => el.value),
+                volume: document.getElementById('volume').value,
+                budget: document.getElementById('budget').value,
+                additionalInfo: document.getElementById('additionalInfo').value,
+                email: document.getElementById('email').value
+            };
+
+            // Show loading
+            document.getElementById('intakeForm').classList.add('hidden');
+            document.getElementById('loadingState').classList.remove('hidden');
+
+            try {
+                // Call backend API
+                const response = await fetch('http://localhost:3000/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                // Show results
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('results').classList.remove('hidden');
+                document.getElementById('resultContent').innerHTML = formatResults(result);
+
+            } catch (error) {
+                alert('Error al generar la solución. Por favor, intenta de nuevo.');
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('intakeForm').classList.remove('hidden');
+            }
+        });
+
+        function formatResults(result) {
+            return `
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-r from-purple-600/20 to-pink-600/20 p-6 rounded-lg border border-purple-400/30">
+                        <h3 class="text-2xl font-bold mb-4">📋 Resumen de tu Solución</h3>
+                        <p class="text-lg mb-2"><strong>Stack Recomendado:</strong> ${result.recommendedStack}</p>
+                        <p class="text-lg mb-2"><strong>Tiempo de Implementación:</strong> ${result.estimatedTime}</p>
+                        <p class="text-lg"><strong>Costo Estimado:</strong> ${result.estimatedCost}</p>
+                    </div>
+
+                    <div class="bg-white/5 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-3">🏗️ Arquitectura Propuesta</h3>
+                        <pre class="bg-black/30 p-4 rounded overflow-x-auto text-sm">${result.architecture}</pre>
+                    </div>
+
+                    <div class="bg-white/5 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-3">⚙️ Componentes a Desarrollar</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            ${result.components.map(comp => `<li>${comp}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="bg-white/5 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-3">🔌 APIs y Servicios</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            ${result.apis.map(api => `<li>${api}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="bg-green-600/20 border border-green-400/30 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-3">✅ Próximos Pasos</h3>
+                        <ol class="list-decimal list-inside space-y-2">
+                            ${result.nextSteps.map(step => `<li>${step}</li>`).join('')}
+                        </ol>
+                    </div>
+
+                    <div class="text-center mt-8">
+                        <button onclick="location.reload()" class="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-lg font-semibold transition">
+                            🔄 Crear Otra Solución
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
