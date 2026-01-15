@@ -203,6 +203,32 @@ app.post('/api/analyze', async (req, res) => {
         // Analizar con IA
         const solution = await analyzeSolutionWithAI(clientData);
 
+        // 🔥 NUEVO: Enviar notificaciones automáticas
+        try {
+            const emailService = require('./services/emailService');
+            
+            // Email a ti (admin) - notifica que hay un nuevo lead
+            if (process.env.ADMIN_EMAIL) {
+                console.log('📧 Enviando notificación a admin...');
+                await emailService.notifyNewLead(clientData, solution);
+            }
+            
+            // Email al cliente con su propuesta
+            if (clientData.email) {
+                console.log('📧 Enviando propuesta al cliente...');
+                await emailService.sendProposalToClient(clientData, solution);
+            }
+            
+            // Webhook (Slack/Discord) - opcional
+            if (process.env.WEBHOOK_URL) {
+                console.log('🔔 Enviando webhook...');
+                await emailService.sendWebhookNotification(clientData, solution);
+            }
+        } catch (emailError) {
+            console.error('⚠️  Error enviando notificaciones (no crítico):', emailError);
+            // No bloquear la respuesta si falla el email
+        }
+
         // Guardar en base de datos (por implementar)
         // await saveSolution(clientData, solution);
 
