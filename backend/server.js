@@ -205,7 +205,8 @@ app.post('/api/analyze', async (req, res) => {
 
         // 🔥 NUEVO: Enviar notificaciones automáticas
         try {
-            const emailService = require('./services/emailService');
+            // Buscar en raíz ya que el archivo está suelto
+            const emailService = require('../emailService');
             
             // Email a ti (admin) - notifica que hay un nuevo lead
             if (process.env.ADMIN_EMAIL) {
