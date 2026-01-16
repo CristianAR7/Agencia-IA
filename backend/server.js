@@ -203,31 +203,35 @@ app.post('/api/analyze', async (req, res) => {
         // Analizar con IA
         const solution = await analyzeSolutionWithAI(clientData);
 
-        // 🔥 NUEVO: Enviar notificaciones automáticas
+        // 📧 Sistema de emails desactivado temporalmente
+        // Para activarlo más tarde:
+        // 1. Crear archivo backend/services/emailService.js
+        // 2. Configurar variables EMAIL_USER, EMAIL_PASSWORD, ADMIN_EMAIL
+        // 3. Descomentar el código de abajo
+        
+        console.log('📋 Lead capturado:', {
+            negocio: clientData.businessName,
+            email: clientData.email,
+            soluciones: clientData.solutionTypes,
+            presupuesto: solution.estimatedCost
+        });
+        
+        // TODO: Implementar notificaciones cuando esté listo
+        /*
         try {
             const emailService = require('./services/emailService');
             
-            // Email a ti (admin) - notifica que hay un nuevo lead
             if (process.env.ADMIN_EMAIL) {
-                console.log('📧 Enviando notificación a admin...');
                 await emailService.notifyNewLead(clientData, solution);
             }
             
-            // Email al cliente con su propuesta
             if (clientData.email) {
-                console.log('📧 Enviando propuesta al cliente...');
                 await emailService.sendProposalToClient(clientData, solution);
             }
-            
-            // Webhook (Slack/Discord) - opcional
-            if (process.env.WEBHOOK_URL) {
-                console.log('🔔 Enviando webhook...');
-                await emailService.sendWebhookNotification(clientData, solution);
-            }
         } catch (emailError) {
-            console.error('⚠️  Error enviando notificaciones (no crítico):', emailError);
-            // No bloquear la respuesta si falla el email
+            console.error('Error con emails:', emailError);
         }
+        */
 
         // Guardar en base de datos (por implementar)
         // await saveSolution(clientData, solution);
