@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Política de Privacidad - CRIAL Solutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #e2e8f0;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+        }
+        .nav {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: white;
+        }
+        .logo i { color: #3b82f6; font-size: 1.5rem; }
+        .logo-accent { color: #3b82f6; }
+        .back-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: #60a5fa; }
+        .container {
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+        .content-box {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 3rem;
+        }
+        h1 { font-size: 2.5rem; color: white; margin-bottom: 0.5rem; }
+        .update-date { color: #94a3b8; font-size: 0.875rem; margin-bottom: 3rem; }
+        h2 { font-size: 1.5rem; color: white; margin: 2.5rem 0 1rem; }
+        h3 { font-size: 1.125rem; color: white; margin: 1.5rem 0 0.5rem; }
+        p { margin-bottom: 1rem; color: #cbd5e1; }
+        ul { margin: 1rem 0 1rem 1.5rem; color: #cbd5e1; }
+        li { margin-bottom: 0.5rem; }
+        a { color: #60a5fa; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        strong { color: white; }
+        .info-box {
+            background: rgba(51, 65, 85, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .info-box p { margin-bottom: 0.5rem; }
+        .highlight-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        .highlight-box p { color: #93c5fd; }
+        .note {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0.25rem;
+        }
+        .note p { color: #93c5fd; font-size: 0.875rem; font-style: italic; margin: 0; }
+        .rights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .right-box {
+            background: rgba(51, 65, 85, 0.3);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 3px solid #3b82f6;
+        }
+        .right-box h4 {
+            color: #60a5fa;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .right-box p {
+            font-size: 0.875rem;
+            margin: 0;
+        }
+        footer {
+            background: #0f172a;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+        }
+        footer p { color: #64748b; font-size: 0.875rem; margin-bottom: 1rem; }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .footer-links a { color: #94a3b8; font-size: 0.875rem; }
+        .footer-links a:hover { color: #60a5fa; }
+        @media (max-width: 768px) {
+            .content-box { padding: 1.5rem; }
+            h1 { font-size: 2rem; }
+            .nav-container, .container { padding: 0 1rem; }
+            .rights-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-brain"></i>
+                <span>CRIAL<span class="logo-accent">Solutions</span></span>
+            </a>
+            <a href="index.html" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content-box">
+            <h1>Política de Privacidad</h1>
+            <p class="update-date">Última actualización: Enero 2025</p>
+
+            <div class="highlight-box">
+                <p><i class="fa-solid fa-shield-halved"></i> <strong>En CRIAL Solutions respetamos tu privacidad.</strong> Esta política explica cómo recopilamos, usamos y protegemos tus datos conforme al RGPD.</p>
+            </div>
+
+            <h2>1. Responsable del Tratamiento</h2>
+            <div class="info-box">
+                <p><strong>Identidad:</strong> [TU NOMBRE / EMPRESA]</p>
+                <p><strong>NIF/CIF:</strong> [TU NIF/CIF]</p>
+                <p><strong>Dirección:</strong> [TU DIRECCIÓN]</p>
+                <p><strong>Email:</strong> <a href="mailto:hola@crial.solutions">hola@crial.solutions</a></p>
+            </div>
+
+            <h2>2. Datos que Recopilamos</h2>
+            
+            <h3><i class="fa-solid fa-user"></i> Datos de Identificación</h3>
+            <ul>
+                <li>Nombre y apellidos</li>
+                <li>Email</li>
+                <li>Teléfono (opcional)</li>
+                <li>Nombre de empresa</li>
+            </ul>
+
+            <h3><i class="fa-solid fa-briefcase"></i> Datos Comerciales</h3>
+            <ul>
+                <li>Industria o sector</li>
+                <li>Descripción del negocio</li>
+                <li>Necesidades y objetivos</li>
+                <li>Presupuesto indicativo</li>
+            </ul>
+
+            <h3><i class="fa-solid fa-globe"></i> Datos de Navegación</h3>
+            <ul>
+                <li>Dirección IP</li>
+                <li>Tipo de navegador</li>
+                <li>Páginas visitadas</li>
+                <li>Cookies (ver <a href="politica-cookies.html">Política de Cookies</a>)</li>
+            </ul>
+
+            <h2>3. Finalidad del Tratamiento</h2>
+            <ul>
+                <li><strong>Gestión de solicitudes:</strong> Base legal: Consentimiento</li>
+                <li><strong>Generación de propuestas:</strong> Base legal: Medidas precontractuales</li>
+                <li><strong>Prestación de servicios:</strong> Base legal: Ejecución de contrato</li>
+                <li><strong>Comunicaciones comerciales:</strong> Base legal: Consentimiento (baja en cualquier momento)</li>
+                <li><strong>Cumplimiento legal:</strong> Base legal: Obligación legal</li>
+                <li><strong>Mejora de servicios:</strong> Base legal: Interés legítimo</li>
+            </ul>
+
+            <h2>4. Conservación de Datos</h2>
+            <ul>
+                <li><strong>Solicitudes:</strong> 1 año desde última interacción</li>
+                <li><strong>Contratos:</strong> Durante vigencia + 6 años</li>
+                <li><strong>Marketing:</strong> Hasta solicitud de baja</li>
+            </ul>
+
+            <h2>5. Destinatarios</h2>
+            <p>Tus datos pueden comunicarse a:</p>
+            <ul>
+                <li><strong>Proveedores tecnológicos:</strong> Railway, Vercel, Cloudflare</li>
+                <li><strong>Servicios IA:</strong> Anthropic (Claude)</li>
+                <li><strong>Autoridades:</strong> Cuando sea legalmente requerido</li>
+            </ul>
+            <p>Todos cumplen con RGPD o tienen garantías adecuadas.</p>
+
+            <h2>6. Tus Derechos</h2>
+            
+            <div class="rights-grid">
+                <div class="right-box">
+                    <h4><i class="fa-solid fa-eye"></i> Acceso</h4>
+                    <p>Confirmar y acceder a tus datos</p>
+                </div>
+                <div class="right-box">
+                    <h4><i class="fa-solid fa-pen"></i> Rectificación</h4>
+                    <p>Corregir datos inexactos</p>
+                </div>
+                <div class="right-box">
+                    <h4><i class="fa-solid fa-trash"></i> Supresión</h4>
+                    <p>Eliminar datos innecesarios</p>
+                </div>
+                <div class="right-box">
+                    <h4><i class="fa-solid fa-ban"></i> Oposición</h4>
+                    <p>Oponerte al tratamiento</p>
+                </div>
+                <div class="right-box">
+                    <h4><i class="fa-solid fa-pause"></i> Limitación</h4>
+                    <p>Limitar el tratamiento</p>
+                </div>
+                <div class="right-box">
+                    <h4><i class="fa-solid fa-download"></i> Portabilidad</h4>
+                    <p>Recibir y trasladar datos</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <p><strong>¿Cómo ejercer tus derechos?</strong></p>
+                <p>Email: <a href="mailto:hola@crial.solutions">hola@crial.solutions</a></p>
+                <p>Incluye copia de tu DNI. Respuesta en máximo 1 mes.</p>
+                <p style="margin-top:1rem;">También puedes reclamar ante la <strong>AEPD</strong> (www.aepd.es).</p>
+            </div>
+
+            <h2>7. Seguridad</h2>
+            <ul>
+                <li>Cifrado SSL/TLS en comunicaciones</li>
+                <li>Servidores seguros certificados</li>
+                <li>Acceso restringido al personal autorizado</li>
+                <li>Copias de seguridad periódicas</li>
+                <li>Auditorías regulares</li>
+            </ul>
+
+            <h2>8. Menores</h2>
+            <p>Servicios no dirigidos a menores de 18 años. No recopilamos datos de menores intencionadamente.</p>
+
+            <h2>9. Actualizaciones</h2>
+            <p>Podemos actualizar esta política periódicamente. Te notificaremos cambios significativos.</p>
+
+            <h2>10. Contacto</h2>
+            <div class="info-box">
+                <p><i class="fa-solid fa-envelope"></i> <a href="mailto:hola@crial.solutions">hola@crial.solutions</a></p>
+                <p><i class="fa-solid fa-globe"></i> <a href="https://www.crial.solutions">www.crial.solutions</a></p>
+            </div>
+
+            <div class="note">
+                <p>Esta política cumple con el RGPD (UE 2016/679) y LOPDGDD (Ley Orgánica 3/2018)</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 CRIAL Solutions</p>
+        <div class="footer-links">
+            <a href="aviso-legal.html">Aviso Legal</a>
+            <a href="politica-privacidad.html">Privacidad</a>
+            <a href="politica-cookies.html">Cookies</a>
+        </div>
+    </footer>
+</body>
+</html>

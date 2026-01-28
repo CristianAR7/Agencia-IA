@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Política de Cookies - CRIAL Solutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #e2e8f0;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+        }
+        .nav {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: white;
+        }
+        .logo i { color: #3b82f6; font-size: 1.5rem; }
+        .logo-accent { color: #3b82f6; }
+        .back-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: #60a5fa; }
+        .container {
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+        .content-box {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 3rem;
+        }
+        h1 { font-size: 2.5rem; color: white; margin-bottom: 0.5rem; }
+        .update-date { color: #94a3b8; font-size: 0.875rem; margin-bottom: 3rem; }
+        h2 { font-size: 1.5rem; color: white; margin: 2.5rem 0 1rem; }
+        h3 { font-size: 1.125rem; color: white; margin: 1.5rem 0 0.5rem; }
+        p { margin-bottom: 1rem; color: #cbd5e1; }
+        ul { margin: 1rem 0 1rem 1.5rem; color: #cbd5e1; }
+        li { margin-bottom: 0.5rem; }
+        a { color: #60a5fa; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        strong { color: white; }
+        .info-box {
+            background: rgba(51, 65, 85, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .info-box p { margin-bottom: 0.5rem; }
+        .highlight-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        .highlight-box p { color: #93c5fd; }
+        .note {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0.25rem;
+        }
+        .note p { color: #93c5fd; font-size: 0.875rem; font-style: italic; margin: 0; }
+        .cookie-type {
+            background: rgba(51, 65, 85, 0.5);
+            border-left: 4px solid;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+        .cookie-type.green { border-color: #10b981; }
+        .cookie-type.blue { border-color: #3b82f6; }
+        .cookie-type.purple { border-color: #a855f7; }
+        .cookie-type h4 {
+            color: white;
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .cookie-type .meta {
+            font-size: 0.875rem;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+        }
+        .cookie-type .purpose {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 1rem;
+            border-radius: 0.25rem;
+            margin-top: 1rem;
+        }
+        .cookie-type .purpose p {
+            font-size: 0.875rem;
+            margin: 0.25rem 0;
+        }
+        .cookie-type .purpose strong {
+            color: white;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .browser-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+        .browser-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #cbd5e1;
+        }
+        .browser-link i {
+            font-size: 1.25rem;
+        }
+        footer {
+            background: #0f172a;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+        }
+        footer p { color: #64748b; font-size: 0.875rem; margin-bottom: 1rem; }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .footer-links a { color: #94a3b8; font-size: 0.875rem; }
+        .footer-links a:hover { color: #60a5fa; }
+        @media (max-width: 768px) {
+            .content-box { padding: 1.5rem; }
+            h1 { font-size: 2rem; }
+            .nav-container, .container { padding: 0 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-brain"></i>
+                <span>CRIAL<span class="logo-accent">Solutions</span></span>
+            </a>
+            <a href="index.html" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content-box">
+            <h1>Política de Cookies</h1>
+            <p class="update-date">Última actualización: Enero 2025</p>
+
+            <div class="highlight-box">
+                <p><i class="fa-solid fa-cookie-bite"></i> <strong>Esta política explica qué son las cookies</strong>, cómo las usamos en www.crial.solutions y cómo puedes gestionarlas.</p>
+            </div>
+
+            <h2>1. ¿Qué son las Cookies?</h2>
+            <p>Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas un sitio web. Permiten recordar tus acciones y preferencias para mejorar tu experiencia.</p>
+
+            <h2>2. Tipos de Cookies que Utilizamos</h2>
+
+            <div class="cookie-type green">
+                <h4><i class="fa-solid fa-cog"></i> Cookies Técnicas (Necesarias)</h4>
+                <p class="meta">Duración: Sesión / 1 año | <strong>Necesarias: Sí</strong></p>
+                <p>Esenciales para el correcto funcionamiento del sitio. Sin estas cookies no podríamos ofrecerte nuestros servicios.</p>
+                <div class="purpose">
+                    <strong>Finalidad:</strong>
+                    <p>• Gestión de sesiones de usuario</p>
+                    <p>• Seguridad del sitio web</p>
+                    <p>• Recordar configuraciones básicas</p>
+                    <p>• Funcionamiento del formulario</p>
+                </div>
+            </div>
+
+            <div class="cookie-type blue">
+                <h4><i class="fa-solid fa-chart-line"></i> Cookies Analíticas</h4>
+                <p class="meta">Duración: Hasta 2 años | <strong>Necesarias: No (requieren consentimiento)</strong></p>
+                <p>Nos permiten analizar el uso del sitio para mejorar la experiencia de usuario.</p>
+                <div class="purpose">
+                    <strong>Finalidad:</strong>
+                    <p>• Medir tráfico y comportamiento</p>
+                    <p>• Entender páginas más visitadas</p>
+                    <p>• Mejorar diseño y contenido</p>
+                    <p>• Optimizar experiencia</p>
+                    <p><strong>Proveedores:</strong> Cloudflare Analytics, Vercel Analytics</p>
+                </div>
+            </div>
+
+            <div class="cookie-type purple">
+                <h4><i class="fa-solid fa-user"></i> Cookies de Preferencias</h4>
+                <p class="meta">Duración: 1 año | <strong>Necesarias: No (requieren consentimiento)</strong></p>
+                <p>Permiten recordar tus preferencias para personalizar futuras visitas.</p>
+                <div class="purpose">
+                    <strong>Finalidad:</strong>
+                    <p>• Recordar idioma preferido</p>
+                    <p>• Guardar configuraciones</p>
+                    <p>• Recordar aceptación de cookies</p>
+                </div>
+            </div>
+
+            <h2>3. Cookies de Terceros</h2>
+            <p>Utilizamos servicios de terceros que pueden instalar sus propias cookies:</p>
+
+            <div class="info-box">
+                <p><strong>Cloudflare</strong> - CDN y seguridad</p>
+                <p style="font-size:0.875rem; color:#94a3b8;">Política: <a href="https://www.cloudflare.com/privacypolicy/" target="_blank">cloudflare.com/privacypolicy</a></p>
+            </div>
+
+            <div class="info-box">
+                <p><strong>Vercel</strong> - Hosting y análisis</p>
+                <p style="font-size:0.875rem; color:#94a3b8;">Política: <a href="https://vercel.com/legal/privacy-policy" target="_blank">vercel.com/legal/privacy-policy</a></p>
+            </div>
+
+            <div class="info-box">
+                <p><strong>Railway</strong> - Backend y procesamiento</p>
+                <p style="font-size:0.875rem; color:#94a3b8;">Política: <a href="https://railway.app/legal/privacy" target="_blank">railway.app/legal/privacy</a></p>
+            </div>
+
+            <h2>4. Cómo Gestionar Cookies</h2>
+
+            <h3><i class="fa-solid fa-browser"></i> Configuración del Navegador</h3>
+            <p>Puedes configurar tu navegador para rechazar cookies o avisarte antes de aceptarlas:</p>
+
+            <div class="browser-links">
+                <div class="browser-link">
+                    <i class="fa-brands fa-chrome" style="color:#fbbf24;"></i>
+                    <a href="https://support.google.com/chrome/answer/95647" target="_blank">Google Chrome</a>
+                </div>
+                <div class="browser-link">
+                    <i class="fa-brands fa-firefox-browser" style="color:#fb923c;"></i>
+                    <a href="https://support.mozilla.org/es/kb/cookies-informacion-que-los-sitios-web-guardan-en-" target="_blank">Mozilla Firefox</a>
+                </div>
+                <div class="browser-link">
+                    <i class="fa-brands fa-safari" style="color:#60a5fa;"></i>
+                    <a href="https://support.apple.com/es-es/guide/safari/sfri11471/mac" target="_blank">Safari</a>
+                </div>
+                <div class="browser-link">
+                    <i class="fa-brands fa-edge" style="color:#3b82f6;"></i>
+                    <a href="https://support.microsoft.com/es-es/microsoft-edge/eliminar-las-cookies-en-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09" target="_blank">Microsoft Edge</a>
+                </div>
+            </div>
+
+            <div class="note">
+                <p><i class="fa-solid fa-exclamation-triangle"></i> <strong>Importante:</strong> Bloquear cookies puede afectar la funcionalidad del sitio.</p>
+            </div>
+
+            <h2>5. Base Legal</h2>
+            <p>El uso de cookies se basa en tu consentimiento, excepto cookies técnicas necesarias para el funcionamiento del sitio.</p>
+
+            <h2>6. Actualizaciones</h2>
+            <p>Podemos actualizar esta política periódicamente. Te recomendamos revisarla regularmente.</p>
+
+            <h2>7. Más Información</h2>
+            <p>Para más información sobre privacidad, consulta nuestra <a href="politica-privacidad.html">Política de Privacidad</a>.</p>
+
+            <h2>8. Contacto</h2>
+            <div class="info-box">
+                <p><i class="fa-solid fa-envelope"></i> <a href="mailto:hola@crial.solutions">hola@crial.solutions</a></p>
+                <p><i class="fa-solid fa-globe"></i> <a href="https://www.crial.solutions">www.crial.solutions</a></p>
+            </div>
+
+            <div class="note">
+                <p>Esta política cumple con la Ley 34/2002 (LSSI-CE) y el RGPD</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 CRIAL Solutions</p>
+        <div class="footer-links">
+            <a href="aviso-legal.html">Aviso Legal</a>
+            <a href="politica-privacidad.html">Privacidad</a>
+            <a href="politica-cookies.html">Cookies</a>
+        </div>
+    </footer>
+</body>
+</html>
