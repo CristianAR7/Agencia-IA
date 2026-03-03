@@ -1,9 +1,12 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use('/admin', express.static(path.join(__dirname, 'admin')));
+const leads = [];
 
 // ============================================
 // EL CEREBRO - Analizador de Soluciones con IA
@@ -215,6 +218,15 @@ app.post('/api/analyze', async (req, res) => {
             soluciones: clientData.solutionTypes,
             presupuesto: solution.estimatedCost
         });
+
+        const lead = {
+            id: Date.now(),
+            ...clientData,
+            solution: solution,
+            createdAt: new Date().toISOString(),
+            status: 'pending'
+        };
+        leads.push(lead);
         
         // TODO: Implementar notificaciones cuando esté listo
         /*
@@ -288,6 +300,23 @@ app.post('/api/generate-solution', async (req, res) => {
 // Health check
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', service: 'AI Solution Generator' });
+});
+
+// ============================================
+// ADMIN ENDPOINTS
+// ============================================
+
+app.get('/api/admin/leads', (req, res) => {
+    const sortedLeads = [...leads].sort((a, b) =>
+        new Date(b.createdAt) - new Date(a.createdAt)
+    );
+    res.json(sortedLeads);
+});
+
+app.get('/api/admin/leads/:id', (req, res) => {
+    const lead = leads.find(l => l.id == req.params.id);
+    if (!lead) return res.status(404).json({ error: 'Not found' });
+    res.json(lead);
 });
 
 const PORT = process.env.PORT || 3000;
