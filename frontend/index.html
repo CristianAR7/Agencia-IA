@@ -312,7 +312,7 @@
             </div>
 
             <div id="intakeForm" class="glass p-8 rounded-xl border-slate-800">
-                <form id="intakeFormElement" class="space-y-6">
+                <form id="intakeFormElement" method="POST" class="space-y-6">
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-semibold text-slate-300 mb-2">Nombre del Negocio *</label>
@@ -472,7 +472,7 @@
         </div>
     </footer>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false">
         document.getElementById('intakeFormElement').addEventListener('submit', async (e) => {
             e.preventDefault();
             
