@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arroz con Miso - Tu guía definitiva para viajar a Japón</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #C41E3A;
+            --color-secondary: #1A1A1A;
+            --color-bg: #FAFAFA;
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-bg);
+            color: var(--color-secondary);
+            line-height: 1.6;
+        }
+
+        /* HEADER CON SLIDER */
+        .hero {
+            position: relative;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .hero-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+
+        .hero-slide::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26,26,26,0.7) 0%, rgba(196,30,58,0.3) 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            color: white;
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero h1 .highlight {
+            color: var(--color-primary);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #9A1829;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--color-secondary);
+        }
+
+        /* SECCIÓN DE BOOKING */
+        .booking-section {
+            background: white;
+            padding: 4rem 2rem;
+            margin: -4rem auto 4rem;
+            max-width: 1000px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .booking-section h2 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .booking-section p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .booking-btn {
+            display: block;
+            margin: 0 auto;
+            padding: 1.2rem 3rem;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 6px;
+        }
+
+        .booking-btn:hover {
+            background: #9A1829;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+        }
+
+        /* BLOG SECTION */
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-label {
+            font-size: 0.9rem;
+            color: var(--color-primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .blog-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .blog-card-image {
+            width: 100%;
+            height: 250px;
+            background: #e0e0e0;
+            object-fit: cover;
+        }
+
+        .blog-card-content {
+            padding: 1.5rem;
+        }
+
+        .blog-card-tag {
+            background: var(--color-primary);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .blog-card-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-card-excerpt {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .blog-card-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        /* GUIDES SECTION */
+        .guides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .guide-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .guide-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .guide-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .guide-title {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .guide-description {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .guide-price {
+            font-size: 2rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .guide-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .guide-features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .guide-features li:before {
+            content: '✓ ';
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: var(--color-secondary);
+            color: white;
+            padding: 4rem 2rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-bio {
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--color-primary);
+            transform: translateY(-4px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        /* CHATBOT - RESPONSIVE */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+            width: calc(100% - 40px);
+        }
+
+        .chatbot-toggle {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .chatbot-toggle svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+
+        .chatbot-window {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 100%;
+            max-height: 500px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+        }
+
+        .chatbot-window.active {
+            display: flex;
+        }
+
+        .chatbot-header {
+            background: var(--color-primary);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .chatbot-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .chatbot-name {
+            flex: 1;
+        }
+
+        .chatbot-name h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .chatbot-name p {
+            margin: 0;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+
+        .chatbot-message {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chatbot-message.user {
+            flex-direction: row-reverse;
+        }
+
+        .chatbot-message-bubble {
+            max-width: 80%;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+        }
+
+        .chatbot-message.bot .chatbot-message-bubble {
+            background: #f0f0f0;
+        }
+
+        .chatbot-message.user .chatbot-message-bubble {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .chatbot-input-container {
+            padding: 1rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chatbot-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+        }
+
+        .chatbot-send {
+            padding: 0.8rem 1.5rem;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .blog-grid,
+            .guides-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chatbot-container {
+                bottom: 10px;
+                right: 10px;
+                width: calc(100% - 20px);
+            }
+
+            .chatbot-window {
+                max-height: 400px;
+                bottom: 70px;
+            }
+
+            .chatbot-messages {
+                max-height: 250px;
+            }
+
+            .booking-section {
+                margin: -2rem 1rem 2rem;
+                padding: 2rem 1rem;
+            }
+        }
+
+        .error-message {
+            text-align: center;
+            color: var(--color-primary);
+            padding: 2rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- HERO CON SLIDER -->
+    <section class="hero">
+        <div class="hero-slider" id="heroSlider">
+            <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920')"></div>
+            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=1920')"></div>
+            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1920')"></div>
+            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1513407030348-c983a97b98d8?w=1920')"></div>
+        </div>
+        <div class="hero-content">
+            <h1>Descubre el <span class="highlight">verdadero Japón</span> con Arroz con Miso</h1>
+            <p>Experiencias auténticas, secretos locales y la mejor comida. Porque viajar a Japón es más que visitar templos.</p>
+            <div class="hero-buttons">
+                <a href="#guias" class="btn btn-primary">Ver Guías</a>
+                <a href="#blog" class="btn btn-secondary">Explorar Blog</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- BOOKING SECTION -->
+    <section class="booking-section">
+        <h2>📞 Consulta Personalizada</h2>
+        <p>¿Necesitas ayuda planificando tu viaje? Agenda una llamada y te ayudo a crear el itinerario perfecto</p>
+        <button class="booking-btn" onclick="window.location.href='booking.html'">
+            Reservar Llamada Gratuita
+        </button>
+    </section>
+
+    <!-- BLOG SECTION -->
+    <section id="blog" class="section">
+        <div class="section-header">
+            <div class="section-label">ブログ • BLOG</div>
+            <h2 class="section-title">Últimas Experiencias</h2>
+            <p class="section-description">Historias, consejos y secretos de Japón que no encontrarás en las guías turísticas</p>
+        </div>
+        <div id="blogPosts" class="blog-grid">
+            <div class="loading">Cargando posts...</div>
+        </div>
+    </section>
+
+    <!-- GUIDES SECTION -->
+    <section id="guias" class="section">
+        <div class="section-header">
+            <div class="section-label">ガイド • GUÍAS</div>
+            <h2 class="section-title">Guías Completas</h2>
+            <p class="section-description">Todo lo que necesitas para tu viaje perfecto a Japón</p>
+        </div>
+        <div id="guidesContainer" class="guides-grid">
+            <div class="loading">Cargando guías...</div>
+        </div>
+    </section>
+
+    <!-- VIDEOS SECTION -->
+    <section id="videos" class="section" style="background: white;">
+        <div class="section-header">
+            <div class="section-label">ビデオ • VIDEOS</div>
+            <h2 class="section-title">Experiencias en Video</h2>
+            <p class="section-description">Descubre Japón a través de mis ojos</p>
+        </div>
+        <div id="videosContainer" class="blog-grid">
+            <div class="loading">Cargando videos...</div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 3rem;">
+                
+                <!-- Bio + Redes Sociales -->
+                <div>
+                    <p class="footer-bio">
+                        Compartiendo las mejores experiencias de mis viajes a Japón y cientos de descubrimientos. 
+                        Mi misión es mostrarte el Japón real, más allá de los clichés turísticos como agente de viajes colaborador con Sugoi Viajes.
+                    </p>
+                    <div class="footer-social">
+                        <a href="https://instagram.com/TU_USUARIO" class="social-link" target="_blank" title="Instagram">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        </a>
+                        <a href="https://youtube.com/@TU_CANAL" class="social-link" target="_blank" title="YouTube">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        </a>
+                        <a href="https://twitter.com/TU_USUARIO" class="social-link" target="_blank" title="Twitter">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        </a>
+                        <a href="/cdn-cgi/l/email-protection#57030208121a161e1b17362525382d3438393a3e24387934383a" class="social-link" title="Email">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Apps Recomendadas -->
+                <div>
+                    <h3 style="font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 1rem;">📱 Apps Recomendadas</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.8rem;"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none; transition: all 0.3s;" onmouseover="this.style.color='#C41E3A'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">Google Maps (Offline)</a></li>
+                        <li style="margin-bottom: 0.8rem;"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none; transition: all 0.3s;" onmouseover="this.style.color='#C41E3A'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">Hyperdia (Trenes)</a></li>
+                        <li style="margin-bottom: 0.8rem;"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none; transition: all 0.3s;" onmouseover="this.style.color='#C41E3A'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">Google Translate</a></li>
+                        <li style="margin-bottom: 0.8rem;"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none; transition: all 0.3s;" onmouseover="this.style.color='#C41E3A'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">Tabelog (Restaurantes)</a></li>
+                    </ul>
+                </div>
+
+                <!-- Checklist del Viaje -->
+                <div>
+                    <h3 style="font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 1rem;">✅ Checklist del Viaje</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.8rem;"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none; transition: all 0.3s;" onmouseover="this.style.color='#C41E3A'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">JR Pass</a></li>
+                        <li style="margin-bottom: 0.8rem;"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none; transition: all 0.3s;" onmouseover="this.style.color='#C41E3A'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">Pocket WiFi</a></li>
+                        <li style="margin-bottom: 0.8rem;"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none; transition: all 0.3s;" onmouseover="this.style.color='#C41E3A'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">Seguro de Viaje</a></li>
+                        <li style="margin-bottom: 0.8rem;"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none; transition: all 0.3s;" onmouseover="this.style.color='#C41E3A'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">Adaptador de Enchufe</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                © 2026 Arroz con Miso • Creado con ❤️ para viajeros que buscan el Japón auténtico
+            </div>
+        </div>
+    </footer>
+
+    <!-- CHATBOT -->
+    <div class="chatbot-container">
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <div class="chatbot-avatar">👩</div>
+                <div class="chatbot-name">
+                    <h3>Marta</h3>
+                    <p>Tu asistente para viajar a Japón</p>
+                </div>
+            </div>
+            <div class="chatbot-messages" id="chatMessages">
+                <div class="chatbot-message bot">
+                    <div class="chatbot-message-bubble">
+                        ¡Hola! Soy Marta 👋 ¿En qué puedo ayudarte con tu viaje a Japón?
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-input-container">
+                <input 
+                    type="text" 
+                    class="chatbot-input" 
+                    id="chatInput" 
+                    placeholder="Escribe tu pregunta..."
+                    autocomplete="off"
+                >
+                <button class="chatbot-send" id="chatSend">Enviar</button>
+            </div>
+        </div>
+        <button class="chatbot-toggle" id="chatToggle">
+            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        </button>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        const API_URL = 'https://arrozconmiso-production.up.railway.app';
+
+        // SLIDER DEL HERO
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.hero-slide');
+        
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+        
+        setInterval(nextSlide, 10000); // Cambiar cada 10 segundos
+
+        // CARGAR BLOG POSTS
+        async function loadBlogPosts() {
+            try {
+                const response = await fetch(`${API_URL}/api/blog/posts?published_only=true`);
+                const posts = await response.json();
+                
+                const container = document.getElementById('blogPosts');
+                
+                if (posts.length === 0) {
+                    container.innerHTML = '<p class="error-message">No hay posts disponibles</p>';
+                    return;
+                }
+                
+                container.innerHTML = posts.slice(0, 3).map(post => `
+                    <a href="blog-post.html?slug=${post.slug}" class="blog-card">
+                        <img src="${post.featured_image_url || 'https://via.placeholder.com/400x250'}" 
+                             alt="${post.title}" 
+                             class="blog-card-image"
+                             onerror="this.src='https://via.placeholder.com/400x250'">
+                        <div class="blog-card-content">
+                            <span class="blog-card-tag">VIAJES</span>
+                            <h3 class="blog-card-title">${post.title}</h3>
+                            <p class="blog-card-excerpt">${post.excerpt || 'Descubre más sobre esta experiencia...'}</p>
+                            <div class="blog-card-meta">
+                                <span>📅 ${new Date(post.published_at || post.created_at).toLocaleDateString('es-ES')}</span>
+                                <span>⏱️ ${post.reading_time || 5} min lectura</span>
+                            </div>
+                        </div>
+                    </a>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                document.getElementById('blogPosts').innerHTML = '<p class="error-message">Error al cargar los posts</p>';
+            }
+        }
+
+        // CARGAR GUÍAS
+        async function loadGuides() {
+            try {
+                const response = await fetch(`${API_URL}/api/guides?active_only=true`);
+                const guides = await response.json();
+                
+                const container = document.getElementById('guidesContainer');
+                
+                if (guides.length === 0) {
+                    container.innerHTML = '<p class="error-message">No hay guías disponibles</p>';
+                    return;
+                }
+                
+                container.innerHTML = guides.map(guide => `
+                    <a href="guide.html?slug=${guide.slug}" class="guide-card">
+                        <div class="guide-icon">${guide.icon || '📚'}</div>
+                        <h3 class="guide-title">${guide.title}</h3>
+                        <p class="guide-description">${guide.description}</p>
+                        <div class="guide-price">€${guide.price}</div>
+                        <ul class="guide-features">
+                            ${(guide.features || '').split(',').map(f => `<li>${f.trim()}</li>`).join('')}
+                        </ul>
+                        <button class="btn btn-primary" style="width: 100%;">Comprar Guía</button>
+                    </a>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading guides:', error);
+                document.getElementById('guidesContainer').innerHTML = '<p class="error-message">Error al cargar las guías. Por favor, intenta más tarde.</p>';
+            }
+        }
+
+        // CARGAR VIDEOS
+        async function loadVideos() {
+            try {
+                const response = await fetch(`${API_URL}/api/videos?published_only=true`);
+                const videos = await response.json();
+                
+                const container = document.getElementById('videosContainer');
+                
+                if (videos.length === 0) {
+                    container.innerHTML = '<p class="error-message">No hay videos disponibles todavía</p>';
+                    return;
+                }
+                
+                container.innerHTML = videos.slice(0, 6).map(video => {
+                    // Generar URL de YouTube automáticamente
+                    const youtubeUrl = `https://www.youtube.com/watch?v=${video.youtube_id}`;
+                    
+                    // Generar miniatura de YouTube automáticamente
+                    const thumbnailUrl = video.thumbnail_url || `https://img.youtube.com/vi/${video.youtube_id}/hqdefault.jpg`;
+                    
+                    return `
+                    <a href="${youtubeUrl}" target="_blank" class="blog-card" style="cursor: pointer; text-decoration: none;">
+                        <div style="position: relative; width: 100%; height: 250px; background: #000; overflow: hidden; border-radius: 10px;">
+                            <img src="${thumbnailUrl}" 
+                                 alt="${video.title}" 
+                                 style="width: 100%; height: 100%; object-fit: cover;"
+                                 onerror="this.src='https://img.youtube.com/vi/${video.youtube_id}/hqdefault.jpg'">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 70px; height: 70px; background: rgba(196, 30, 58, 0.95); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.2s;">
+                                ▶
+                            </div>
+                        </div>
+                        <div class="blog-card-content">
+                            <span class="blog-card-tag">VIDEO</span>
+                            <h3 class="blog-card-title">${video.title}</h3>
+                        </div>
+                    </a>
+                    `;
+                }).join('');
+                
+                // Añadir hover effect al botón play
+                const style = document.createElement('style');
+                style.textContent = `
+                    .blog-card:hover div[style*="width: 70px"] {
+                        transform: translate(-50%, -50%) scale(1.1);
+                    }
+                `;
+                document.head.appendChild(style);
+                
+            } catch (error) {
+                console.error('Error loading videos:', error);
+                document.getElementById('videosContainer').innerHTML = '<p class="error-message">Error al cargar los videos</p>';
+            }
+        }
+
+        // CHATBOT
+        const chatToggle = document.getElementById('chatToggle');
+        const chatWindow = document.getElementById('chatbotWindow');
+        const chatInput = document.getElementById('chatInput');
+        const chatSend = document.getElementById('chatSend');
+        const chatMessages = document.getElementById('chatMessages');
+        
+        // Mantener historial de conversación
+        let conversationHistory = [];
+
+        chatToggle.addEventListener('click', () => {
+            chatWindow.classList.toggle('active');
+        });
+
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // Add user message to UI
+            chatMessages.innerHTML += `
+                <div class="chatbot-message user">
+                    <div class="chatbot-message-bubble">${message}</div>
+                </div>
+            `;
+            chatInput.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Add to conversation history
+            conversationHistory.push({
+                role: "user",
+                content: message
+            });
+
+            try {
+                const response = await fetch(`${API_URL}/api/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        messages: conversationHistory
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta');
+                }
+
+                const data = await response.json();
+                
+                // Try different possible response fields
+                const botResponse = data.response || data.message || data.text || 'Lo siento, no pude procesar tu mensaje.';
+                
+                // Add to conversation history
+                conversationHistory.push({
+                    role: "assistant",
+                    content: botResponse
+                });
+                
+                chatMessages.innerHTML += `
+                    <div class="chatbot-message bot">
+                        <div class="chatbot-message-bubble">${botResponse}</div>
+                    </div>
+                `;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } catch (error) {
+                console.error('Error:', error);
+                chatMessages.innerHTML += `
+                    <div class="chatbot-message bot">
+                        <div class="chatbot-message-bubble">Lo siento, tuve un problema. ¿Puedes intentar de nuevo?</div>
+                    </div>
+                `;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        chatSend.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // CARGAR TODO
+        loadBlogPosts();
+        loadGuides();
+        loadVideos();
+    </script>
+</body>
+</html>
