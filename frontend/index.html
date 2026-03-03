@@ -29,7 +29,7 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-950 via-[#0c1e3a] to-slate-950 min-h-screen text-slate-200 animate-gradient bg-fixed font-sans">
+<body class="bg-gradient-to-br from-slate-950 via-[#0c1e3a] to-slate-950 min-h-screen text-slate-200 animate-gradient font-sans">
 
     <nav class="fixed w-full z-50 glass-heavy">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -492,7 +492,7 @@
 
             document.getElementById('intakeForm').classList.add('hidden');
             document.getElementById('loadingState').classList.remove('hidden');
-            document.getElementById('generator').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('generator').scrollIntoView({ behavior: 'auto' });
 
             const statusEl = document.getElementById('loadingStatus');
             statusEl.textContent = 'Conectando con el servidor...';
