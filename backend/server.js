@@ -1,12 +1,12 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const db = require('./db');
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use('/admin', express.static(path.join(__dirname, 'admin')));
-const leads = [];
 
 // ============================================
 // EL CEREBRO - Analizador de Soluciones con IA
@@ -226,27 +226,7 @@ app.post('/api/analyze', async (req, res) => {
             createdAt: new Date().toISOString(),
             status: 'pending'
         };
-        leads.push(lead);
-        
-        // TODO: Implementar notificaciones cuando esté listo
-        /*
-        try {
-            const emailService = require('./services/emailService');
-            
-            if (process.env.ADMIN_EMAIL) {
-                await emailService.notifyNewLead(clientData, solution);
-            }
-            
-            if (clientData.email) {
-                await emailService.sendProposalToClient(clientData, solution);
-            }
-        } catch (emailError) {
-            console.error('Error con emails:', emailError);
-        }
-        */
-
-        // Guardar en base de datos (por implementar)
-        // await saveSolution(clientData, solution);
+        await db.saveLead(lead);
 
         res.json(solution);
 
@@ -306,23 +286,36 @@ app.get('/health', (req, res) => {
 // ADMIN ENDPOINTS
 // ============================================
 
-app.get('/api/admin/leads', (req, res) => {
-    const sortedLeads = [...leads].sort((a, b) =>
-        new Date(b.createdAt) - new Date(a.createdAt)
-    );
-    res.json(sortedLeads);
+app.get('/api/admin/leads', async (req, res) => {
+    try {
+        const leads = await db.getLeads();
+        res.json(leads);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener leads' });
+    }
 });
 
-app.get('/api/admin/leads/:id', (req, res) => {
-    const lead = leads.find(l => l.id == req.params.id);
-    if (!lead) return res.status(404).json({ error: 'Not found' });
-    res.json(lead);
+app.get('/api/admin/leads/:id', async (req, res) => {
+    try {
+        const lead = await db.getLead(req.params.id);
+        if (!lead) return res.status(404).json({ error: 'Not found' });
+        res.json(lead);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener lead' });
+    }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`🚀 AI Solution Generator Backend running on port ${PORT}`);
-    console.log(`📊 Ready to analyze solutions!`);
-});
+db.init()
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`🚀 AI Solution Generator Backend running on port ${PORT}`);
+            console.log(`📊 Ready to analyze solutions!`);
+        });
+    })
+    .catch(err => {
+        console.error('Error conectando a la base de datos:', err.message);
+        process.exit(1);
+    });
 
 module.exports = app;
