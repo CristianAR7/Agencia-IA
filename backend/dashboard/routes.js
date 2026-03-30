@@ -8,6 +8,22 @@ const db       = require('./db');
 // Init DB tables on first load
 db.init().catch(err => console.error('[dashboard] DB init error:', err.message));
 
+// Skills disponibles
+const AVAILABLE_SKILLS = [
+    { name: 'marketingskills/page-cro',          category: 'marketing',  desc: 'Optimización de conversión (CRO)' },
+    { name: 'marketingskills/seo-audit',          category: 'marketing',  desc: 'Auditoría SEO completa' },
+    { name: 'marketingskills/content-strategy',   category: 'marketing',  desc: 'Estrategia de contenido' },
+    { name: 'marketingskills/competitor-alternatives', category: 'marketing', desc: 'Análisis de competidores' },
+    { name: 'marketingskills/cold-email',         category: 'marketing',  desc: 'Cold email y outreach' },
+    { name: 'marketingskills/copywriting',        category: 'marketing',  desc: 'Copywriting persuasivo' },
+    { name: 'ui-ux-pro-max',                      category: 'diseño',     desc: 'Estilos UI, paletas, tipografías' },
+    { name: 'superclaude',                        category: 'agentes',    desc: '30 comandos + 20 agentes especializados' },
+    { name: 'agency-agents',                      category: 'agentes',    desc: '156 agentes de agencia' },
+    { name: 'claude-banana',                      category: 'imágenes',   desc: 'Prompts para generación de imágenes' },
+];
+
+router.get('/skills', (req, res) => res.json(AVAILABLE_SKILLS));
+
 // ── PIPELINE ─────────────────────────────────────────────────────────────────
 
 router.post('/pipeline/analyze', async (req, res) => {
@@ -114,6 +130,35 @@ router.get('/chat/sessions', async (req, res) => {
 router.get('/chat/:sessionId', async (req, res) => {
     try {
         res.json(await chat.getHistory(req.params.sessionId));
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ── NOTION ────────────────────────────────────────────────────────────────────
+const notion = require('./notion.service');
+
+router.get('/notion/leads', async (req, res) => {
+    try {
+        res.json(await notion.getLeads());
+    } catch (err) {
+        res.status(500).json({ error: err.message, configured: false });
+    }
+});
+
+router.patch('/notion/leads/:id', async (req, res) => {
+    try {
+        const result = await notion.updateLeadStatus(req.params.id, req.body.status);
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.post('/notion/leads', async (req, res) => {
+    try {
+        const result = await notion.createLead(req.body);
+        res.json(result);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
