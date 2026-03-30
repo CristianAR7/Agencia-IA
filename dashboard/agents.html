@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentes — CRIAL Dashboard</title>
+  <link rel="stylesheet" href="/dashboard/assets/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a href="/dashboard/" class="sidebar-logo">
+      <i class="fa-solid fa-brain icon"></i>
+      <span class="name">CRIAL<span>Dashboard</span></span>
+    </a>
+    <span class="sidebar-label">Módulos</span>
+    <nav class="sidebar-nav">
+      <a href="/dashboard/" class="nav-link">
+        <i class="fa-solid fa-house nav-icon"></i> Hub
+      </a>
+      <a href="/dashboard/pipeline.html" class="nav-link">
+        <i class="fa-solid fa-magnifying-glass-chart nav-icon"></i> Pipeline
+      </a>
+      <a href="/dashboard/agents.html" class="nav-link active">
+        <i class="fa-solid fa-robot nav-icon"></i> Agentes
+      </a>
+      <a href="/dashboard/chat.html" class="nav-link">
+        <i class="fa-solid fa-comments nav-icon"></i> Chat Hub
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="/" class="nav-link" style="font-size:0.78rem;color:var(--text-muted)">
+        <i class="fa-solid fa-arrow-left nav-icon"></i> CRIAL Solutions
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content">
+    <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <h1 class="page-title"><i class="fa-solid fa-robot" style="color:#6ee7b7;margin-right:0.5rem"></i>Constructor de Agentes</h1>
+        <p class="page-subtitle">Genera agente WhatsApp + chatbot web + agente de voz listos para desplegar.</p>
+      </div>
+      <button id="download-btn" class="btn btn-emerald hidden" onclick="downloadZip()">
+        <i class="fa-solid fa-download"></i> Descargar ZIP
+      </button>
+    </div>
+
+    <!-- Client selector + form -->
+    <div id="config-section" class="glass" style="padding:1.75rem;margin-bottom:1.5rem">
+      <h3 style="font-weight:700;color:white;margin-bottom:1.25rem;font-size:0.95rem">Información del negocio</h3>
+
+      <div id="client-selector-row" style="margin-bottom:1.25rem">
+        <label class="label">Cargar desde pipeline <span style="font-weight:400;text-transform:none;color:var(--text-muted)">(opcional)</span></label>
+        <select class="select" id="client-select" onchange="loadClientData(this.value)" style="max-width:400px">
+          <option value="">— Nuevo cliente / entrada manual —</option>
+        </select>
+      </div>
+
+      <div class="input-row">
+        <div class="field">
+          <label class="label">Nombre del negocio *</label>
+          <input class="input" id="agBusinessName" type="text" placeholder="Ej: Clínica Sonrisa" required>
+        </div>
+        <div class="field">
+          <label class="label">Sector *</label>
+          <input class="input" id="agSector" type="text" placeholder="Ej: Clínica dental, restaurante...">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="field">
+          <label class="label">Servicios principales</label>
+          <input class="input" id="agServices" type="text" placeholder="Ej: limpiezas dentales, ortodoncia, blanqueamiento">
+        </div>
+        <div class="field">
+          <label class="label">Horario</label>
+          <input class="input" id="agHours" type="text" placeholder="Ej: Lun-Vie 9:00-20:00, Sáb 10:00-14:00">
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">Descripción del cliente objetivo</label>
+        <input class="input" id="agTarget" type="text" placeholder="Ej: Adultos 25-55 años en Barcelona, familias con niños">
+      </div>
+      <div class="field">
+        <label class="label">Información adicional para los agentes</label>
+        <textarea class="textarea" id="agNotes" placeholder="Precios, promociones, FAQs frecuentes, cómo reservar citas, qué no debe decir el agente..." rows="3"></textarea>
+      </div>
+
+      <button class="btn btn-primary btn-lg" id="generate-btn" onclick="generateAgents()" style="width:100%;margin-top:0.5rem">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> Generar 3 Agentes en Paralelo
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading-section" class="hidden glass" style="padding:3rem;text-align:center">
+      <div class="spinner spinner-lg" style="margin:0 auto 1.25rem"></div>
+      <p style="font-size:1.1rem;font-weight:600;color:white;margin-bottom:0.5rem">Generando agentes con IA...</p>
+      <p style="color:var(--text-secondary);font-size:0.875rem">Generando WhatsApp + Chatbot + Voz en paralelo — puede tardar 15-30 segundos</p>
+    </div>
+
+    <!-- Results tabs -->
+    <div id="results-section" class="hidden glass" style="padding:1.75rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <h3 style="font-weight:700;color:white">Agentes generados</h3>
+        <span class="badge badge-green"><i class="fa-solid fa-check" style="margin-right:0.3rem"></i>Listos para desplegar</span>
+      </div>
+
+      <div id="agents-tabs">
+        <div class="tabs">
+          <button class="tab-btn" data-tab="whatsapp"><i class="fa-brands fa-whatsapp" style="color:#22c55e;margin-right:0.4rem"></i>WhatsApp</button>
+          <button class="tab-btn" data-tab="chatbot"><i class="fa-solid fa-comment-dots" style="color:#93c5fd;margin-right:0.4rem"></i>Chatbot Web</button>
+          <button class="tab-btn" data-tab="voice"><i class="fa-solid fa-microphone" style="color:#c4b5fd;margin-right:0.4rem"></i>Agente de Voz</button>
+        </div>
+
+        <!-- WhatsApp panel -->
+        <div class="tab-panel" data-panel="whatsapp">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
+            <div class="glass-sm" style="padding:1rem">
+              <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem">Nombre del agente</div>
+              <div id="wa-name" style="font-weight:700;color:white;font-size:0.95rem"></div>
+            </div>
+            <div class="glass-sm" style="padding:1rem">
+              <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem">Personalidad</div>
+              <div id="wa-personality" style="font-size:0.85rem;color:#cbd5e1"></div>
+            </div>
+          </div>
+          <div class="field">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <label class="label" style="margin:0">Mensaje de bienvenida</label>
+              <button class="copy-btn" onclick="copyText(document.getElementById('wa-welcome').textContent, this)">Copiar</button>
+            </div>
+            <div id="wa-welcome" class="glass-sm" style="padding:0.75rem;font-size:0.875rem;color:#cbd5e1;line-height:1.6"></div>
+          </div>
+          <div class="field">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <label class="label" style="margin:0">System Prompt completo</label>
+              <button class="copy-btn" onclick="copyText(document.getElementById('wa-prompt').textContent, this)">Copiar todo</button>
+            </div>
+            <div id="wa-prompt" class="code-block"></div>
+          </div>
+          <div style="margin-bottom:1rem">
+            <label class="label">Quick replies</label>
+            <div id="wa-qr" style="display:flex;flex-wrap:wrap;gap:0.4rem"></div>
+          </div>
+          <div class="glass-sm" style="padding:1rem">
+            <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.5rem">Variables de entorno necesarias</div>
+            <div id="wa-envvars" style="font-family:monospace;font-size:0.8rem;color:#93c5fd"></div>
+          </div>
+        </div>
+
+        <!-- Chatbot panel -->
+        <div class="tab-panel" data-panel="chatbot">
+          <div style="display:grid;grid-template-columns:1fr 1fr 80px 80px;gap:1rem;margin-bottom:1.25rem">
+            <div class="glass-sm" style="padding:1rem">
+              <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;font-size:0.65rem;margin-bottom:0.4rem">Nombre</div>
+              <div id="cb-name" style="font-weight:700;color:white;font-size:0.9rem"></div>
+            </div>
+            <div class="glass-sm" style="padding:1rem">
+              <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.4rem">Bienvenida</div>
+              <div id="cb-welcome" style="font-size:0.8rem;color:#cbd5e1"></div>
+            </div>
+            <div class="glass-sm" style="padding:1rem;text-align:center">
+              <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.4rem">Avatar</div>
+              <div id="cb-avatar" style="font-size:1.5rem"></div>
+            </div>
+            <div class="glass-sm" style="padding:1rem;text-align:center">
+              <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.4rem">Color</div>
+              <div id="cb-color-preview" style="width:28px;height:28px;border-radius:50%;margin:0 auto"></div>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Preguntas sugeridas</label>
+            <div id="cb-questions" style="display:flex;flex-wrap:wrap;gap:0.4rem"></div>
+          </div>
+          <div class="field">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <label class="label" style="margin:0">System Prompt</label>
+              <button class="copy-btn" onclick="copyText(document.getElementById('cb-prompt').textContent, this)">Copiar</button>
+            </div>
+            <div id="cb-prompt" class="code-block"></div>
+          </div>
+          <div class="field">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <label class="label" style="margin:0">Snippet de embed (pegar antes de &lt;/body&gt;)</label>
+              <button class="copy-btn" onclick="copyText(document.getElementById('cb-snippet').textContent, this)">Copiar</button>
+            </div>
+            <div id="cb-snippet" class="code-block"></div>
+          </div>
+        </div>
+
+        <!-- Voice panel -->
+        <div class="tab-panel" data-panel="voice">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
+            <div class="glass-sm" style="padding:1rem">
+              <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.4rem">Agente</div>
+              <div id="vo-name" style="font-weight:700;color:white;margin-bottom:0.25rem"></div>
+              <div id="vo-voice" style="font-size:0.8rem;color:#c4b5fd"></div>
+            </div>
+            <div class="glass-sm" style="padding:1rem">
+              <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.4rem">Descripción de voz</div>
+              <div id="vo-voice-desc" style="font-size:0.85rem;color:#cbd5e1"></div>
+            </div>
+          </div>
+          <div class="field">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <label class="label" style="margin:0">Script de bienvenida (lo que dice al contestar)</label>
+              <button class="copy-btn" onclick="copyText(document.getElementById('vo-greeting').textContent, this)">Copiar</button>
+            </div>
+            <div id="vo-greeting" class="glass-sm" style="padding:0.75rem;font-size:0.9rem;color:white;font-style:italic;line-height:1.6"></div>
+          </div>
+          <div class="field">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <label class="label" style="margin:0">System Prompt</label>
+              <button class="copy-btn" onclick="copyText(document.getElementById('vo-prompt').textContent, this)">Copiar</button>
+            </div>
+            <div id="vo-prompt" class="code-block"></div>
+          </div>
+          <div class="glass-sm" style="padding:1rem;margin-bottom:1rem">
+            <div style="font-size:0.7rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.5rem">Configuración Vapi.ai</div>
+            <div id="vo-vapi" style="font-family:monospace;font-size:0.8rem;color:#93c5fd;white-space:pre-wrap"></div>
+          </div>
+          <div>
+            <div style="font-size:0.7rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.5rem">Pasos de despliegue</div>
+            <div id="vo-steps" style="font-size:0.85rem;color:#cbd5e1"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script src="/dashboard/assets/dashboard.js"></script>
+<script>
+let generatedConfigs = null;
+let currentClientId  = null;
+let currentBizName   = '';
+
+// Parse URL params
+const params  = new URLSearchParams(window.location.search);
+const urlCId  = params.get('clientId');
+const urlName = params.get('name');
+
+// Load client list
+async function loadClients() {
+  try {
+    const clients = await API.get('/pipeline/clients');
+    const sel = document.getElementById('client-select');
+    clients.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = `${c.business_name} (${c.sector || '—'}) — ${formatDate(c.created_at).split(',')[0]}`;
+      sel.appendChild(opt);
+    });
+    if (urlCId) {
+      sel.value = urlCId;
+      await loadClientData(urlCId);
+    }
+  } catch {}
+}
+
+async function loadClientData(clientId) {
+  if (!clientId) return;
+  try {
+    const c = await API.get(`/pipeline/clients/${clientId}`);
+    currentClientId = clientId;
+    document.getElementById('agBusinessName').value = c.business_name || '';
+    document.getElementById('agSector').value       = c.sector || '';
+    const r = c.report || {};
+    document.getElementById('agServices').value = (r.business_profile?.main_services || []).join(', ');
+    document.getElementById('agTarget').value   = r.business_profile?.target_customer || '';
+    currentBizName = c.business_name;
+  } catch (err) {
+    toast('Error al cargar cliente: ' + err.message, 'error');
+  }
+}
+
+async function generateAgents() {
+  const businessName = document.getElementById('agBusinessName').value.trim();
+  const sector       = document.getElementById('agSector').value.trim();
+  if (!businessName || !sector) { toast('Nombre y sector son obligatorios', 'error'); return; }
+
+  const profile = {
+    businessName,
+    sector,
+    services: document.getElementById('agServices').value.trim(),
+    targetCustomer: document.getElementById('agTarget').value.trim(),
+    hours: document.getElementById('agHours').value.trim(),
+    notes: document.getElementById('agNotes').value.trim()
+  };
+
+  currentBizName = businessName;
+
+  const btn = document.getElementById('generate-btn');
+  setLoading(btn, true, 'Generando...');
+  document.getElementById('loading-section').classList.remove('hidden');
+  document.getElementById('results-section').classList.add('hidden');
+
+  try {
+    const data = await API.post('/agents/generate', {
+      clientId: currentClientId || null,
+      businessProfile: profile
+    });
+    generatedConfigs = data.configs;
+    renderAgents(data.configs);
+    document.getElementById('loading-section').classList.add('hidden');
+    document.getElementById('results-section').classList.remove('hidden');
+    document.getElementById('download-btn').classList.remove('hidden');
+    setLoading(btn, false);
+    toast('3 agentes generados correctamente', 'success');
+    initTabs('#agents-tabs');
+  } catch (err) {
+    document.getElementById('loading-section').classList.add('hidden');
+    setLoading(btn, false);
+    toast('Error: ' + err.message, 'error', 6000);
+  }
+}
+
+function renderAgents(configs) {
+  const wa = configs.whatsapp || {};
+  const cb = configs.chatbot  || {};
+  const vo = configs.voice    || {};
+
+  // WhatsApp
+  document.getElementById('wa-name').textContent        = wa.agent_name || '';
+  document.getElementById('wa-personality').textContent = wa.personality || '';
+  document.getElementById('wa-welcome').textContent     = wa.welcome_message || '';
+  document.getElementById('wa-prompt').textContent      = wa.system_prompt || '';
+  document.getElementById('wa-qr').innerHTML = (wa.quick_replies || [])
+    .map(r => `<span class="badge badge-blue">${esc(r.title)}</span>`).join('');
+  document.getElementById('wa-envvars').innerHTML = (wa.twilio_setup?.required_env_vars || [])
+    .map(v => `<div>${v}</div>`).join('');
+
+  // Chatbot
+  document.getElementById('cb-name').textContent    = cb.agent_name || '';
+  document.getElementById('cb-welcome').textContent = cb.welcome_message || '';
+  document.getElementById('cb-avatar').textContent  = cb.avatar_emoji || '🤖';
+  const colorPrev = document.getElementById('cb-color-preview');
+  colorPrev.style.background = cb.color_primary || '#2563eb';
+  document.getElementById('cb-prompt').textContent   = cb.system_prompt || '';
+  document.getElementById('cb-snippet').textContent  = cb.embed_snippet || '';
+  document.getElementById('cb-questions').innerHTML  = (cb.suggested_questions || [])
+    .map(q => `<span class="badge badge-blue">${esc(q)}</span>`).join('');
+
+  // Voice
+  document.getElementById('vo-name').textContent       = vo.agent_name || '';
+  document.getElementById('vo-voice').textContent      = `ElevenLabs: ${vo.elevenlabs_voice || ''}`;
+  document.getElementById('vo-voice-desc').textContent = vo.voice_description || '';
+  document.getElementById('vo-greeting').textContent   = vo.greeting_script || '';
+  document.getElementById('vo-prompt').textContent     = vo.system_prompt || '';
+  document.getElementById('vo-vapi').textContent       = vo.vapi_config ? JSON.stringify(vo.vapi_config, null, 2) : '';
+  document.getElementById('vo-steps').innerHTML = (vo.deployment_steps || [])
+    .map((s, i) => `<div style="padding:0.3rem 0;border-bottom:1px solid rgba(255,255,255,0.04)">${i+1}. ${esc(s)}</div>`).join('');
+}
+
+async function downloadZip() {
+  if (!generatedConfigs) return;
+  const btn = document.getElementById('download-btn');
+  setLoading(btn, true, 'Preparando ZIP...');
+  try {
+    await API.download('/agents/download', {
+      businessName: currentBizName,
+      configs: generatedConfigs
+    }, `${currentBizName.toLowerCase().replace(/\s+/g,'-')}-agentes-crial.zip`);
+    toast('ZIP descargado', 'success');
+  } catch (err) {
+    toast('Error al descargar: ' + err.message, 'error');
+  } finally {
+    setLoading(btn, false);
+  }
+}
+
+loadClients();
+</script>
+</body>
+</html>

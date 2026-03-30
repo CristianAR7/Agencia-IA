@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -304,6 +305,10 @@ app.get('/api/admin/leads/:id', async (req, res) => {
         res.status(500).json({ error: 'Error al obtener lead' });
     }
 });
+
+// Dashboard — montado antes del servidor, sin colisión con rutas existentes
+app.use('/dashboard', require('express').static(require('path').join(__dirname, '../dashboard')));
+app.use('/dashboard/api', require('./dashboard/routes'));
 
 const PORT = process.env.PORT || 3000;
 db.init()

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pipeline — CRIAL Dashboard</title>
+  <link rel="stylesheet" href="/dashboard/assets/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a href="/dashboard/" class="sidebar-logo">
+      <i class="fa-solid fa-brain icon"></i>
+      <span class="name">CRIAL<span>Dashboard</span></span>
+    </a>
+    <span class="sidebar-label">Módulos</span>
+    <nav class="sidebar-nav">
+      <a href="/dashboard/" class="nav-link">
+        <i class="fa-solid fa-house nav-icon"></i> Hub
+      </a>
+      <a href="/dashboard/pipeline.html" class="nav-link active">
+        <i class="fa-solid fa-magnifying-glass-chart nav-icon"></i> Pipeline
+      </a>
+      <a href="/dashboard/agents.html" class="nav-link">
+        <i class="fa-solid fa-robot nav-icon"></i> Agentes
+      </a>
+      <a href="/dashboard/chat.html" class="nav-link">
+        <i class="fa-solid fa-comments nav-icon"></i> Chat Hub
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="/" class="nav-link" style="font-size:0.78rem;color:var(--text-muted)">
+        <i class="fa-solid fa-arrow-left nav-icon"></i> CRIAL Solutions
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content" style="max-width:900px">
+    <div class="page-header">
+      <h1 class="page-title"><i class="fa-solid fa-magnifying-glass-chart" style="color:#93c5fd;margin-right:0.5rem"></i>Pipeline de Cliente</h1>
+      <p class="page-subtitle">Analiza el negocio de un cliente y genera informe con propuesta, CRO y SEO automáticamente.</p>
+    </div>
+
+    <!-- Form -->
+    <div id="form-section" class="glass" style="padding:2rem;margin-bottom:1.5rem">
+      <form id="pipeline-form">
+        <div class="input-row">
+          <div class="field">
+            <label class="label">Nombre del negocio *</label>
+            <input class="input" id="businessName" type="text" placeholder="Ej: Clínica Sonrisa" required>
+          </div>
+          <div class="field">
+            <label class="label">Sector *</label>
+            <select class="select" id="sector" required>
+              <option value="">Seleccionar...</option>
+              <option value="salud">Salud / Clínicas</option>
+              <option value="restaurante">Restaurante / Hostelería</option>
+              <option value="inmobiliaria">Inmobiliaria</option>
+              <option value="fitness">Fitness / Gym</option>
+              <option value="ecommerce">E-commerce</option>
+              <option value="servicios">Servicios Profesionales</option>
+              <option value="educacion">Educación</option>
+              <option value="peluqueria">Peluquería / Estética</option>
+              <option value="legal">Legal / Asesoría</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">URL de la web <span style="font-weight:400;text-transform:none;color:var(--text-muted)">(opcional — se analizará automáticamente)</span></label>
+          <input class="input" id="websiteUrl" type="url" placeholder="https://ejemplo.es">
+        </div>
+        <div class="field">
+          <label class="label">Notas adicionales</label>
+          <textarea class="textarea" id="notes" placeholder="Ej: Tiene 2 sedes, quieren automatizar citas y FAQs de WhatsApp..." rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" style="width:100%">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Analizar con IA
+        </button>
+      </form>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading-section" class="hidden glass" style="padding:3rem;text-align:center">
+      <div class="spinner spinner-lg" style="margin:0 auto 1.25rem"></div>
+      <p style="font-size:1.1rem;font-weight:600;color:white;margin-bottom:0.5rem">Analizando con IA...</p>
+      <p id="loading-status" style="color:var(--text-secondary);font-size:0.875rem">Escaneando web del cliente...</p>
+    </div>
+
+    <!-- Results -->
+    <div id="results-section" class="hidden">
+
+      <!-- Executive summary + proposal -->
+      <div style="display:grid;grid-template-columns:1fr 300px;gap:1.25rem;margin-bottom:1.25rem">
+
+        <div class="glass" style="padding:1.5rem">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem">
+            <i class="fa-solid fa-file-lines" style="color:#93c5fd"></i>
+            <h3 style="font-weight:700;color:white">Resumen Ejecutivo</h3>
+          </div>
+          <p id="res-summary" style="color:#cbd5e1;font-size:0.9rem;line-height:1.6;margin-bottom:1rem"></p>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+            <div class="glass-sm" style="padding:0.75rem">
+              <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.25rem">Tipo de negocio</div>
+              <div id="res-type" style="font-size:0.875rem;color:white;font-weight:600"></div>
+            </div>
+            <div class="glass-sm" style="padding:0.75rem">
+              <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.25rem">Cliente objetivo</div>
+              <div id="res-target" style="font-size:0.875rem;color:white;font-weight:600"></div>
+            </div>
+          </div>
+
+          <hr class="divider">
+          <div>
+            <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem">Servicios principales</div>
+            <div id="res-services" style="display:flex;flex-wrap:wrap;gap:0.4rem"></div>
+          </div>
+        </div>
+
+        <!-- Proposal card -->
+        <div class="glass" style="padding:1.5rem;border-color:rgba(59,130,246,0.3)">
+          <div style="font-size:0.7rem;color:#93c5fd;text-transform:uppercase;font-weight:700;letter-spacing:0.08em;margin-bottom:0.75rem">Propuesta Recomendada</div>
+          <div id="res-package" style="font-size:1rem;font-weight:700;color:white;margin-bottom:0.25rem"></div>
+          <div id="res-price" style="font-size:1.75rem;font-weight:800;color:#93c5fd;margin-bottom:0.1rem"></div>
+          <div id="res-monthly" style="font-size:0.875rem;color:#60a5fa;margin-bottom:1rem"></div>
+          <div id="res-weeks" style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:1rem"></div>
+          <div id="res-features" style="font-size:0.8rem;color:#cbd5e1"></div>
+          <hr class="divider" style="margin:1rem 0">
+          <div style="font-size:0.75rem;color:var(--text-secondary);line-height:1.5" id="res-roi"></div>
+        </div>
+      </div>
+
+      <!-- Pain points + opportunities -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
+        <div class="glass" style="padding:1.5rem">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem">
+            <i class="fa-solid fa-triangle-exclamation" style="color:#fcd34d"></i>
+            <h3 style="font-weight:700;color:white">Pain Points</h3>
+          </div>
+          <div id="res-pain-points"></div>
+        </div>
+        <div class="glass" style="padding:1.5rem">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem">
+            <i class="fa-solid fa-lightbulb" style="color:#6ee7b7"></i>
+            <h3 style="font-weight:700;color:white">Oportunidades IA</h3>
+          </div>
+          <div id="res-opportunities"></div>
+        </div>
+      </div>
+
+      <!-- CRO + SEO scores -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem">
+        <div class="glass" style="padding:1.5rem">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem">
+            <i class="fa-solid fa-chart-line" style="color:#c4b5fd"></i>
+            <h3 style="font-weight:700;color:white">Puntuación CRO</h3>
+          </div>
+          <div id="res-cro-bars"></div>
+          <hr class="divider">
+          <div id="res-cro-recs" style="font-size:0.8rem;color:var(--text-secondary)"></div>
+        </div>
+        <div class="glass" style="padding:1.5rem">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem">
+            <i class="fa-brands fa-google" style="color:#93c5fd"></i>
+            <h3 style="font-weight:700;color:white">Puntuación SEO</h3>
+          </div>
+          <div id="res-seo-bars"></div>
+          <hr class="divider">
+          <div id="res-seo-issues" style="font-size:0.8rem;color:var(--text-secondary)"></div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="glass" style="padding:1.5rem;border-color:rgba(59,130,246,0.3);display:flex;align-items:center;justify-content:space-between;gap:1rem">
+        <div>
+          <div style="font-weight:700;color:white;margin-bottom:0.25rem">¿Listo para generar los agentes?</div>
+          <div style="font-size:0.85rem;color:var(--text-secondary)">Genera agente WhatsApp, chatbot web y agente de voz para este cliente en un clic.</div>
+        </div>
+        <a id="go-agents-btn" href="/dashboard/agents.html" class="btn btn-primary" style="white-space:nowrap">
+          <i class="fa-solid fa-robot"></i> Generar Agentes →
+        </a>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script src="/dashboard/assets/dashboard.js"></script>
+<script>
+let currentClientId = null;
+
+document.getElementById('pipeline-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const body = {
+    businessName: document.getElementById('businessName').value.trim(),
+    sector:       document.getElementById('sector').value,
+    websiteUrl:   document.getElementById('websiteUrl').value.trim() || null,
+    notes:        document.getElementById('notes').value.trim() || null
+  };
+
+  const btn = document.getElementById('submit-btn');
+  setLoading(btn, true, 'Analizando...');
+  document.getElementById('form-section').classList.add('hidden');
+  document.getElementById('loading-section').classList.remove('hidden');
+  document.getElementById('results-section').classList.add('hidden');
+
+  const statusEl = document.getElementById('loading-status');
+  const steps = ['Escaneando web del cliente...', 'Extrayendo contenido e información...', 'Analizando con IA...', 'Generando informe y propuesta...'];
+  let si = 0;
+  const interval = setInterval(() => { if (si < steps.length - 1) statusEl.textContent = steps[++si]; }, 4000);
+
+  try {
+    const data = await API.post('/pipeline/analyze', body);
+    clearInterval(interval);
+    currentClientId = data.clientId;
+    renderResults(data.report, body.businessName);
+    document.getElementById('loading-section').classList.add('hidden');
+    document.getElementById('results-section').classList.remove('hidden');
+    document.getElementById('form-section').classList.remove('hidden');
+    setLoading(btn, false);
+    toast('Análisis completado', 'success');
+  } catch (err) {
+    clearInterval(interval);
+    document.getElementById('loading-section').classList.add('hidden');
+    document.getElementById('form-section').classList.remove('hidden');
+    setLoading(btn, false);
+    toast('Error: ' + err.message, 'error', 5000);
+  }
+});
+
+function renderResults(r, businessName) {
+  // Summary
+  document.getElementById('res-summary').textContent = r.executive_summary || '';
+  document.getElementById('res-type').textContent    = r.business_profile?.type || '—';
+  document.getElementById('res-target').textContent  = r.business_profile?.target_customer || '—';
+
+  document.getElementById('res-services').innerHTML = (r.business_profile?.main_services || [])
+    .map(s => `<span class="badge badge-blue">${esc(s)}</span>`).join('');
+
+  // Proposal
+  const p = r.proposal || {};
+  document.getElementById('res-package').textContent = p.package || '';
+  document.getElementById('res-price').textContent   = p.setup_price ? `€${p.setup_price.toLocaleString()} setup` : '';
+  document.getElementById('res-monthly').textContent = p.monthly_price ? `€${p.monthly_price.toLocaleString()}/mes` : '';
+  document.getElementById('res-weeks').textContent   = p.setup_weeks ? `⏱ Setup en ${p.setup_weeks} semanas` : '';
+  document.getElementById('res-features').innerHTML  = (p.key_features || []).map(f => `<div style="padding:0.2rem 0">✓ ${esc(f)}</div>`).join('');
+  document.getElementById('res-roi').textContent     = p.roi_justification || '';
+
+  // Pain points
+  document.getElementById('res-pain-points').innerHTML = (r.pain_points || []).map(pp => `
+    <div style="margin-bottom:0.75rem;padding:0.75rem;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:8px">
+      <div style="font-weight:600;color:#fcd34d;font-size:0.85rem;margin-bottom:0.2rem">${esc(pp.issue)}</div>
+      <div style="font-size:0.8rem;color:var(--text-secondary)">${esc(pp.impact)}</div>
+      <span class="badge badge-amber" style="margin-top:0.4rem">${esc(pp.priority)}</span>
+    </div>`).join('');
+
+  // Opportunities
+  document.getElementById('res-opportunities').innerHTML = (r.opportunities || []).map(op => `
+    <div style="margin-bottom:0.75rem;padding:0.75rem;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);border-radius:8px">
+      <div style="font-weight:600;color:#6ee7b7;font-size:0.85rem;margin-bottom:0.2rem">${esc(op.area)}</div>
+      <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.2rem">${esc(op.description)}</div>
+      <div style="font-size:0.78rem;color:#34d399">→ ${esc(op.ai_solution)}</div>
+    </div>`).join('');
+
+  // CRO
+  const cro = r.cro_score || {};
+  document.getElementById('res-cro-bars').innerHTML =
+    renderScoreBar('General', cro.overall || 0) +
+    renderScoreBar('Conversión', cro.conversion || 0) +
+    renderScoreBar('Confianza', cro.trust || 0) +
+    renderScoreBar('UX', cro.ux || 0);
+  document.getElementById('res-cro-recs').innerHTML = (cro.recommendations || [])
+    .map(r => `<div style="padding:0.2rem 0;border-bottom:1px solid rgba(255,255,255,0.04)">• ${esc(r)}</div>`).join('');
+
+  // SEO
+  const seo = r.seo_score || {};
+  document.getElementById('res-seo-bars').innerHTML =
+    renderScoreBar('General', seo.overall || 0) +
+    (seo.quick_wins || []).map((w, i) => renderScoreBar(`Win ${i+1}`, 8)).join('');
+  document.getElementById('res-seo-issues').innerHTML = (seo.issues || [])
+    .map(i => `<div style="padding:0.2rem 0;border-bottom:1px solid rgba(255,255,255,0.04)">⚠ ${esc(i)}</div>`).join('');
+
+  // Update agents link with clientId
+  if (currentClientId) {
+    document.getElementById('go-agents-btn').href = `/dashboard/agents.html?clientId=${currentClientId}&name=${encodeURIComponent(businessName)}`;
+  }
+}
+</script>
+</body>
+</html>
