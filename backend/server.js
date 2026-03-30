@@ -307,7 +307,7 @@ app.get('/api/admin/leads/:id', async (req, res) => {
 });
 
 // Dashboard — montado antes del servidor, sin colisión con rutas existentes
-app.use('/dashboard', require('express').static(require('path').join(__dirname, '../dashboard')));
+app.use('/dashboard', require('express').static(path.join(__dirname, 'dashboard-frontend')));
 app.use('/dashboard/api', require('./dashboard/routes'));
 
 const PORT = process.env.PORT || 3000;

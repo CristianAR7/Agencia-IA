@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Hub — CRIAL Dashboard</title>
+  <link rel="stylesheet" href="/dashboard/assets/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a href="/dashboard/" class="sidebar-logo">
+      <i class="fa-solid fa-brain icon"></i>
+      <span class="name">CRIAL<span>Dashboard</span></span>
+    </a>
+    <span class="sidebar-label">Módulos</span>
+    <nav class="sidebar-nav">
+      <a href="/dashboard/" class="nav-link">
+        <i class="fa-solid fa-house nav-icon"></i> Hub
+      </a>
+      <a href="/dashboard/pipeline.html" class="nav-link">
+        <i class="fa-solid fa-magnifying-glass-chart nav-icon"></i> Pipeline
+      </a>
+      <a href="/dashboard/agents.html" class="nav-link">
+        <i class="fa-solid fa-robot nav-icon"></i> Agentes
+      </a>
+      <a href="/dashboard/chat.html" class="nav-link active">
+        <i class="fa-solid fa-comments nav-icon"></i> Chat Hub
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="/" class="nav-link" style="font-size:0.78rem;color:var(--text-muted)">
+        <i class="fa-solid fa-arrow-left nav-icon"></i> CRIAL Solutions
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content" style="padding:1.5rem;display:flex;flex-direction:column;height:100vh">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-shrink:0">
+      <div>
+        <h1 class="page-title" style="margin-bottom:0"><i class="fa-solid fa-comments" style="color:#c4b5fd;margin-right:0.5rem"></i>Chat Hub</h1>
+        <p class="page-subtitle">Claude con contexto de todos tus proyectos y memoria persistente.</p>
+      </div>
+      <div style="display:flex;gap:0.5rem;align-items:center">
+        <span id="session-badge" class="badge badge-purple" style="font-size:0.7rem">Nueva sesión</span>
+        <button class="btn btn-ghost btn-sm" onclick="newSession()">
+          <i class="fa-solid fa-plus"></i> Nueva sesión
+        </button>
+      </div>
+    </div>
+
+    <div class="chat-layout" style="flex:1;min-height:0">
+
+      <!-- Left panel: quick actions + sessions -->
+      <div class="chat-sidebar">
+        <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.4rem;padding:0 0.25rem">Acciones rápidas</div>
+
+        <button class="quick-action" onclick="sendQuick('Analiza el pipeline de leads actual y dime qué leads tienen más probabilidad de cerrar')">
+          📊 Revisar pipeline de leads
+        </button>
+        <button class="quick-action" onclick="sendQuick('Redacta un cold email de seguimiento para un lead que vio la propuesta hace 3 días pero no respondió')">
+          📧 Cold email de seguimiento
+        </button>
+        <button class="quick-action" onclick="sendQuick('Dame una auditoría rápida de CRO para una landing page de agencia de IA. ¿Qué elementos son críticos?')">
+          🎯 Auditoría CRO rápida
+        </button>
+        <button class="quick-action" onclick="sendQuick('¿Cuál es el estado actual de Dronebook y qué deberías priorizar esta semana?')">
+          🚁 Estado de Dronebook
+        </button>
+        <button class="quick-action" onclick="sendQuick('Necesito un script de llamada para ofrecer el agente WhatsApp a una clínica dental. Tono profesional, duración máx 3 minutos')">
+          📞 Script llamada comercial
+        </button>
+        <button class="quick-action" onclick="sendQuick('¿Qué objeciones típicas tengo en ventas de agentes IA y cómo responderlas de forma convincente?')">
+          💬 Manejar objeciones de venta
+        </button>
+        <button class="quick-action" onclick="sendQuick('Propón una estrategia de contenido para LinkedIn de CRIAL Solutions para los próximos 2 semanas')">
+          📱 Estrategia LinkedIn
+        </button>
+        <button class="quick-action" onclick="sendQuick('Ayúdame a calcular el ROI exacto de implementar un agente WhatsApp para un restaurante con 200 reservas/mes')">
+          💰 Calcular ROI para cliente
+        </button>
+
+        <hr class="divider">
+
+        <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.4rem;padding:0 0.25rem">Sesiones recientes</div>
+        <div id="sessions-list" style="font-size:0.78rem;color:var(--text-muted)">Cargando...</div>
+      </div>
+
+      <!-- Chat main area -->
+      <div class="chat-main glass" style="min-height:0">
+
+        <div id="messages" class="chat-messages">
+          <!-- Welcome message -->
+          <div class="message assistant">
+            <div class="message-avatar"><i class="fa-solid fa-brain"></i></div>
+            <div class="message-content">
+              <strong>Hola, Cristian.</strong> Soy tu asistente con contexto completo de CRIAL Solutions, Dronebook y ArrozConMiso. Tengo memoria persistente entre sesiones.<br><br>
+              ¿En qué trabajamos hoy? Puedo ayudarte con leads, propuestas, emails, estrategia, análisis técnico o cualquier cosa relacionada con tus proyectos.
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-area">
+          <textarea
+            id="chat-input"
+            class="chat-input"
+            placeholder="Escribe tu mensaje... (Enter para enviar, Shift+Enter para nueva línea)"
+            rows="1"
+          ></textarea>
+          <button class="btn btn-primary" id="send-btn" onclick="sendMessage()" style="height:44px;padding:0 1.25rem">
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script src="/dashboard/assets/dashboard.js"></script>
+<script>
+let sessionId = Session.get();
+
+// Auto-resize textarea
+const inputEl = document.getElementById('chat-input');
+inputEl.addEventListener('input', () => {
+  inputEl.style.height = 'auto';
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 160) + 'px';
+});
+
+// Enter to send
+inputEl.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+function updateSessionBadge() {
+  const badge = document.getElementById('session-badge');
+  if (sessionId) {
+    badge.textContent = '🔵 Sesión activa';
+    badge.className = 'badge badge-green';
+  } else {
+    badge.textContent = 'Nueva sesión';
+    badge.className = 'badge badge-purple';
+  }
+}
+
+async function loadHistory() {
+  if (!sessionId) return;
+  try {
+    const history = await API.get(`/chat/${sessionId}`);
+    const msgs = document.getElementById('messages');
+    // Clear welcome msg and render history
+    if (history.length > 0) {
+      msgs.innerHTML = '';
+      history.forEach(m => appendMessage(m.role, m.content));
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+  } catch {}
+}
+
+async function loadSessions() {
+  try {
+    const sessions = await API.get('/chat/sessions');
+    const el = document.getElementById('sessions-list');
+    if (!sessions.length) { el.textContent = 'Sin sesiones guardadas'; return; }
+    el.innerHTML = sessions.slice(0, 8).map(s => `
+      <button class="quick-action" style="margin-bottom:2px;font-size:0.75rem" onclick="loadSession('${esc(s.session_id)}')">
+        <span style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc((s.first_message || 'Sin mensajes').slice(0, 40))}</span>
+        <span style="color:var(--text-muted);font-size:0.7rem">${formatDate(s.started_at)}</span>
+      </button>`).join('');
+  } catch {
+    document.getElementById('sessions-list').textContent = 'Error al cargar';
+  }
+}
+
+async function loadSession(sid) {
+  sessionId = sid;
+  Session.set(sid);
+  updateSessionBadge();
+  const msgs = document.getElementById('messages');
+  msgs.innerHTML = '';
+  await loadHistory();
+}
+
+function newSession() {
+  sessionId = null;
+  Session.clear();
+  updateSessionBadge();
+  document.getElementById('messages').innerHTML = `
+    <div class="message assistant">
+      <div class="message-avatar"><i class="fa-solid fa-brain"></i></div>
+      <div class="message-content">Nueva sesión iniciada. ¿En qué trabajamos?</div>
+    </div>`;
+}
+
+function appendMessage(role, content) {
+  const msgs = document.getElementById('messages');
+  const div  = document.createElement('div');
+  div.className = `message ${role}`;
+  const renderedContent = role === 'assistant' ? renderMarkdown(content) : esc(content).replace(/\n/g, '<br>');
+  div.innerHTML = `
+    <div class="message-avatar">
+      ${role === 'user' ? '<i class="fa-solid fa-user"></i>' : '<i class="fa-solid fa-brain"></i>'}
+    </div>
+    <div style="display:flex;flex-direction:column;${role === 'user' ? 'align-items:flex-end' : 'align-items:flex-start'}">
+      <div class="message-content">${renderedContent}</div>
+      ${role === 'assistant' ? `<div class="message-actions"><button class="copy-btn" style="font-size:0.7rem" onclick="copyText(${JSON.stringify(content)}, this)"><i class="fa-solid fa-copy"></i> Copiar</button></div>` : ''}
+    </div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function appendTyping() {
+  const msgs = document.getElementById('messages');
+  const div  = document.createElement('div');
+  div.className = 'message assistant';
+  div.id = 'typing';
+  div.innerHTML = `
+    <div class="message-avatar"><i class="fa-solid fa-brain"></i></div>
+    <div class="message-content"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text  = input.value.trim();
+  if (!text) return;
+
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true;
+  input.value = '';
+  input.style.height = 'auto';
+
+  appendMessage('user', text);
+  const typingEl = appendTyping();
+
+  try {
+    const data = await API.post('/chat', { sessionId, message: text });
+    sessionId = data.sessionId;
+    Session.set(sessionId);
+    updateSessionBadge();
+
+    typingEl.remove();
+    appendMessage('assistant', data.reply);
+    await loadSessions(); // refresh session list
+  } catch (err) {
+    typingEl.remove();
+    appendMessage('assistant', '⚠ Error: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    input.focus();
+  }
+}
+
+function sendQuick(text) {
+  document.getElementById('chat-input').value = text;
+  sendMessage();
+}
+
+// Init
+updateSessionBadge();
+loadHistory();
+loadSessions();
+</script>
+</body>
+</html>
