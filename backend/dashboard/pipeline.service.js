@@ -40,33 +40,26 @@ async function scrapeWebsite(url) {
     }
 }
 
-function parseClaudeJSON(text, businessName) {
-    // 1. Intento directo
-    try {
-        return JSON.parse(text);
-    } catch (_) {}
+function safeParseJSON(text) {
+    // 1. Intentar parseo directo
+    try { return JSON.parse(text); } catch {}
 
-    // 2. Extraer bloque JSON más externo con regex
+    // 2. Extraer bloque JSON con regex
     const match = text.match(/\{[\s\S]*\}/);
     if (match) {
-        try {
-            return JSON.parse(match[0]);
-        } catch (_) {}
+        try { return JSON.parse(match[0]); } catch {}
     }
 
-    // 3. Fallback: objeto de error estructurado para que el frontend no rompa
-    console.error('[pipeline] JSON parse failed. Raw response:\n', text.slice(0, 500));
-    return {
-        _parseError: true,
-        executive_summary: `Análisis generado para ${businessName}. Hubo un problema al procesar la respuesta — vuelve a intentarlo.`,
-        business_profile: { type: '—', main_services: [], target_customer: '—', digital_presence_score: 0, digital_presence_note: '—' },
-        pain_points: [],
-        opportunities: [],
-        recommended_solutions: [],
-        proposal: { package: '—', setup_price: 0, monthly_price: 0, setup_weeks: 0, key_features: [], roi_justification: '—' },
-        cro_score: { overall: 0, conversion: 0, trust: 0, ux: 0, recommendations: [] },
-        seo_score: { overall: 0, issues: [], quick_wins: [] }
-    };
+    // 3. Limpiar caracteres problemáticos y reintentar
+    try {
+        const cleaned = text
+            .replace(/[\x00-\x1F\x7F]/g, ' ')
+            .replace(/,\s*([}\]])/g, '$1')
+            .match(/\{[\s\S]*\}/)?.[0];
+        if (cleaned) return JSON.parse(cleaned);
+    } catch {}
+
+    return null;
 }
 
 async function analyzeWithClaude(businessName, sector, websiteUrl, notes, scraped) {
@@ -142,7 +135,21 @@ Estructura exacta:
     });
 
     const text = msg.content[0].text.trim();
-    return parseClaudeJSON(text, businessName);
+    const parsed = safeParseJSON(text);
+    if (parsed) return parsed;
+
+    console.error('[pipeline] JSON parse failed. Raw response:\n', text.slice(0, 500));
+    return {
+        _parseError: true,
+        executive_summary: `Análisis generado para ${businessName}. Hubo un problema al procesar la respuesta — vuelve a intentarlo.`,
+        business_profile: { type: '—', main_services: [], target_customer: '—', digital_presence_score: 0, digital_presence_note: '—' },
+        pain_points: [],
+        opportunities: [],
+        recommended_solutions: [],
+        proposal: { package: '—', setup_price: 0, monthly_price: 0, setup_weeks: 0, key_features: [], roi_justification: '—' },
+        cro_score: { overall: 0, conversion: 0, trust: 0, ux: 0, recommendations: [] },
+        seo_score: { overall: 0, issues: [], quick_wins: [] }
+    };
 }
 
 async function runPipeline(businessName, sector, websiteUrl, notes) {

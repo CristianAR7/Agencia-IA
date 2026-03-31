@@ -95,11 +95,100 @@
       </button>
     </div>
 
-    <!-- Loading -->
-    <div id="loading-section" class="hidden glass" style="padding:3rem;text-align:center">
-      <div class="spinner spinner-lg" style="margin:0 auto 1.25rem"></div>
-      <p style="font-size:1.1rem;font-weight:600;color:white;margin-bottom:0.5rem">Generando agentes con IA...</p>
-      <p style="color:var(--text-secondary);font-size:0.875rem">Generando WhatsApp + Chatbot + Voz en paralelo — puede tardar 15-30 segundos</p>
+    <!-- Loading — build screen -->
+    <div id="loading-section" class="hidden" style="margin-bottom:1.5rem">
+      <style>
+        .build-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+        @media(max-width:700px) { .build-cards { grid-template-columns:1fr; } }
+
+        .build-card { padding:1.5rem; border-radius:16px;
+          background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
+          animation: fadeInUp 0.4s ease both; }
+        .build-card:nth-child(2) { animation-delay:.1s; }
+        .build-card:nth-child(3) { animation-delay:.2s; }
+
+        .build-icon { width:48px; height:48px; border-radius:12px;
+          display:flex; align-items:center; justify-content:center;
+          font-size:1.4rem; margin-bottom:1rem; }
+        .build-icon-wa  { background:rgba(34,197,94,.15); border:1px solid rgba(34,197,94,.3); }
+        .build-icon-cb  { background:rgba(147,197,253,.12); border:1px solid rgba(147,197,253,.3); }
+        .build-icon-vo  { background:rgba(196,181,253,.12); border:1px solid rgba(196,181,253,.3); }
+
+        .build-title  { font-weight:700; font-size:.9rem; color:white; margin-bottom:.3rem; }
+        .build-status { font-size:.78rem; color:var(--text-muted); margin-bottom:.9rem;
+          min-height:1.2em; transition:color .3s; }
+        .build-status.done { color:#4ade80; font-weight:600; }
+
+        .build-track { height:4px; border-radius:9999px; background:rgba(255,255,255,.07); overflow:hidden; }
+        .build-bar   { height:100%; border-radius:9999px; width:0;
+          transition:width .6s ease, background .4s; }
+        .build-bar-wa { background:linear-gradient(90deg,#16a34a,#22c55e);
+          animation:fillBarWa 25s ease-in-out forwards; }
+        .build-bar-cb { background:linear-gradient(90deg,#1d4ed8,#60a5fa);
+          animation:fillBarCb 25s ease-in-out .8s forwards; }
+        .build-bar-vo { background:linear-gradient(90deg,#7c3aed,#a78bfa);
+          animation:fillBarVo 25s ease-in-out 1.6s forwards; }
+        .build-bar.complete { width:100% !important; animation:none !important; }
+
+        @keyframes fillBarWa { 0%{width:0} 20%{width:30%} 50%{width:60%} 80%{width:82%} 100%{width:91%} }
+        @keyframes fillBarCb { 0%{width:0} 20%{width:28%} 50%{width:58%} 80%{width:80%} 100%{width:90%} }
+        @keyframes fillBarVo { 0%{width:0} 20%{width:25%} 50%{width:55%} 80%{width:78%} 100%{width:89%} }
+
+        /* Mini wave for voice card */
+        .build-wave { display:flex; align-items:center; gap:3px; height:20px; margin-top:.75rem; }
+        .build-wave span { display:inline-block; width:3px; border-radius:9999px;
+          background:#a78bfa; animation:bwave .9s ease-in-out infinite; }
+        .build-wave span:nth-child(2){ animation-delay:.1s; height:10px; }
+        .build-wave span:nth-child(3){ animation-delay:.2s; height:16px; }
+        .build-wave span:nth-child(4){ animation-delay:.3s; height:20px; }
+        .build-wave span:nth-child(5){ animation-delay:.4s; height:14px; }
+        .build-wave span:nth-child(6){ animation-delay:.5s; height:8px;  }
+        .build-wave span:nth-child(1){ height:8px; }
+        .build-wave span:nth-child(7){ animation-delay:.6s; height:12px; }
+        @keyframes bwave {
+          0%,100%{ transform:scaleY(1); opacity:.6; }
+          50%{ transform:scaleY(1.6); opacity:1; }
+        }
+        .build-wave.stopped span { animation-play-state:paused; }
+
+        #loading-section.fade-out { opacity:0; transition:opacity .5s; }
+      </style>
+
+      <div class="build-cards">
+        <!-- WhatsApp -->
+        <div class="build-card" id="bc-wa">
+          <div class="build-icon build-icon-wa">
+            <i class="fa-brands fa-whatsapp" style="color:#22c55e"></i>
+          </div>
+          <div class="build-title">WhatsApp Agent</div>
+          <div class="build-status" id="bs-wa">Analizando negocio...</div>
+          <div class="build-track"><div class="build-bar build-bar-wa" id="bb-wa"></div></div>
+        </div>
+
+        <!-- Chatbot Web -->
+        <div class="build-card" id="bc-cb">
+          <div class="build-icon build-icon-cb">
+            <i class="fa-solid fa-comment-dots" style="color:#93c5fd"></i>
+          </div>
+          <div class="build-title">Chatbot Web</div>
+          <div class="build-status" id="bs-cb">Leyendo contenido...</div>
+          <div class="build-track"><div class="build-bar build-bar-cb" id="bb-cb"></div></div>
+        </div>
+
+        <!-- Agente de Voz -->
+        <div class="build-card" id="bc-vo">
+          <div class="build-icon build-icon-vo">
+            <i class="fa-solid fa-microphone" style="color:#c4b5fd"></i>
+          </div>
+          <div class="build-title">Agente de Voz</div>
+          <div class="build-status" id="bs-vo">Definiendo tono...</div>
+          <div class="build-track"><div class="build-bar build-bar-vo" id="bb-vo"></div></div>
+          <div class="build-wave" id="bwave-vo">
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Results tabs -->
@@ -323,6 +412,48 @@ async function loadClientData(clientId) {
   }
 }
 
+// ── Build animation helpers ──────────────────────────────────────────────────
+
+const BUILD_STEPS = {
+  wa: ['Analizando negocio...', 'Definiendo flujos...', 'Programando respuestas...'],
+  cb: ['Leyendo contenido...', 'Construyendo personalidad...', 'Generando widget...'],
+  vo: ['Definiendo tono...', 'Escribiendo script...', 'Configurando voz...'],
+};
+const _buildTimers = [];
+
+function startBuildAnimation() {
+  ['wa', 'cb', 'vo'].forEach((key, agentIdx) => {
+    const steps = BUILD_STEPS[key];
+    let stepIdx = 0;
+    const delay = agentIdx * 800;
+    const t = setInterval(() => {
+      stepIdx = Math.min(stepIdx + 1, steps.length - 1);
+      const el = document.getElementById(`bs-${key}`);
+      if (el && !el.classList.contains('done')) el.textContent = steps[stepIdx];
+    }, 6000 + delay);
+    _buildTimers.push(t);
+  });
+}
+
+function stopBuildAnimation(success) {
+  _buildTimers.forEach(clearInterval);
+  _buildTimers.length = 0;
+  ['wa', 'cb', 'vo'].forEach((key, i) => {
+    const labels = { wa: '✓ WhatsApp listo', cb: '✓ Chatbot listo', vo: '✓ Voz lista' };
+    const statusEl = document.getElementById(`bs-${key}`);
+    const barEl    = document.getElementById(`bb-${key}`);
+    if (!success) return;
+    // Stagger the "done" state slightly for visual effect
+    setTimeout(() => {
+      if (statusEl) { statusEl.textContent = labels[key]; statusEl.classList.add('done'); }
+      if (barEl)    { barEl.classList.add('complete'); barEl.style.background = 'linear-gradient(90deg,#16a34a,#4ade80)'; }
+    }, i * 200);
+  });
+  // Stop voice wave
+  const wave = document.getElementById('bwave-vo');
+  if (wave) wave.classList.add('stopped');
+}
+
 async function generateAgents() {
   const businessName = document.getElementById('agBusinessName').value.trim();
   const sector       = document.getElementById('agSector').value.trim();
@@ -331,18 +462,35 @@ async function generateAgents() {
   const profile = {
     businessName,
     sector,
-    services: document.getElementById('agServices').value.trim(),
+    services:       document.getElementById('agServices').value.trim(),
     targetCustomer: document.getElementById('agTarget').value.trim(),
-    hours: document.getElementById('agHours').value.trim(),
-    notes: document.getElementById('agNotes').value.trim()
+    hours:          document.getElementById('agHours').value.trim(),
+    notes:          document.getElementById('agNotes').value.trim()
   };
 
   currentBizName = businessName;
+
+  // Reset build status text to initial state
+  BUILD_STEPS.wa.forEach((_, i) => {});
+  document.getElementById('bs-wa').textContent = BUILD_STEPS.wa[0];
+  document.getElementById('bs-cb').textContent = BUILD_STEPS.cb[0];
+  document.getElementById('bs-vo').textContent = BUILD_STEPS.vo[0];
+  ['wa','cb','vo'].forEach(k => {
+    const s = document.getElementById(`bs-${k}`); s.classList.remove('done');
+    const b = document.getElementById(`bb-${k}`);
+    b.classList.remove('complete'); b.style.animation = ''; b.style.background = '';
+    // Re-trigger CSS animation by forcing reflow
+    void b.offsetWidth;
+    b.className = `build-bar build-bar-${k}`;
+  });
+  document.getElementById('bwave-vo').classList.remove('stopped');
 
   const btn = document.getElementById('generate-btn');
   setLoading(btn, true, 'Generando...');
   document.getElementById('loading-section').classList.remove('hidden');
   document.getElementById('results-section').classList.add('hidden');
+
+  startBuildAnimation();
 
   try {
     const data = await API.post('/agents/generate', {
@@ -350,14 +498,31 @@ async function generateAgents() {
       businessProfile: profile
     });
     generatedConfigs = data.configs;
+
+    stopBuildAnimation(true);
+
+    // Brief pause so user sees the "done" state, then fade in results
+    await new Promise(r => setTimeout(r, 900));
+    const loadEl = document.getElementById('loading-section');
+    loadEl.classList.add('fade-out');
+    await new Promise(r => setTimeout(r, 500));
+    loadEl.classList.add('hidden');
+    loadEl.classList.remove('fade-out');
+
     renderAgents(data.configs);
-    document.getElementById('loading-section').classList.add('hidden');
-    document.getElementById('results-section').classList.remove('hidden');
+    const resEl = document.getElementById('results-section');
+    resEl.classList.remove('hidden');
+    resEl.style.opacity = '0';
+    resEl.style.transition = 'opacity .4s';
+    void resEl.offsetWidth;
+    resEl.style.opacity = '1';
+
     document.getElementById('download-btn').classList.remove('hidden');
     setLoading(btn, false);
     toast('3 agentes generados correctamente', 'success');
     initTabs('#agents-tabs');
   } catch (err) {
+    stopBuildAnimation(false);
     document.getElementById('loading-section').classList.add('hidden');
     setLoading(btn, false);
     toast('Error: ' + err.message, 'error', 6000);

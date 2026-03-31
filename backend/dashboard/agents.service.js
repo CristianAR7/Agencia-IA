@@ -1,10 +1,26 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const archiver = require('archiver');
 
-function parseJSON(text) {
+function safeParseJSON(text) {
+    // 1. Intentar parseo directo
+    try { return JSON.parse(text); } catch {}
+
+    // 2. Extraer bloque JSON con regex
     const match = text.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error('Respuesta no contiene JSON válido');
-    return JSON.parse(match[0]);
+    if (match) {
+        try { return JSON.parse(match[0]); } catch {}
+    }
+
+    // 3. Limpiar caracteres problemáticos y reintentar
+    try {
+        const cleaned = text
+            .replace(/[\x00-\x1F\x7F]/g, ' ')
+            .replace(/,\s*([}\]])/g, '$1')
+            .match(/\{[\s\S]*\}/)?.[0];
+        if (cleaned) return JSON.parse(cleaned);
+    } catch {}
+
+    return null;
 }
 
 async function generateWhatsApp(profile) {
@@ -17,7 +33,8 @@ async function generateWhatsApp(profile) {
             content: `Eres experto en WhatsApp Business API. Genera configuración completa para:
 ${JSON.stringify(profile, null, 2)}
 
-JSON exacto (sin texto extra):
+Responde ÚNICAMENTE con JSON válido, sin texto antes ni después, sin markdown, sin bloques de código.
+Estructura exacta:
 {
   "agent_name": "nombre del agente (ej: Asistente de NombreNegocio)",
   "personality": "descripción de personalidad, tono y estilo comunicativo",
@@ -42,7 +59,9 @@ JSON exacto (sin texto extra):
 }`
         }]
     });
-    return parseJSON(msg.content[0].text);
+    const result = safeParseJSON(msg.content[0].text);
+    if (!result) throw new Error('WhatsApp: respuesta JSON no válida de Claude');
+    return result;
 }
 
 async function generateChatbot(profile) {
@@ -55,7 +74,8 @@ async function generateChatbot(profile) {
             content: `Eres experto en chatbots web embebibles. Genera configuración completa para:
 ${JSON.stringify(profile, null, 2)}
 
-JSON exacto (sin texto extra):
+Responde ÚNICAMENTE con JSON válido, sin texto antes ni después, sin markdown, sin bloques de código.
+Estructura exacta:
 {
   "agent_name": "nombre del bot",
   "avatar_emoji": "emoji representativo",
@@ -70,7 +90,9 @@ JSON exacto (sin texto extra):
 }`
         }]
     });
-    return parseJSON(msg.content[0].text);
+    const result = safeParseJSON(msg.content[0].text);
+    if (!result) throw new Error('Chatbot: respuesta JSON no válida de Claude');
+    return result;
 }
 
 async function generateVoice(profile) {
@@ -83,7 +105,8 @@ async function generateVoice(profile) {
             content: `Eres experto en agentes de voz con IA. Genera configuración completa para:
 ${JSON.stringify(profile, null, 2)}
 
-JSON exacto (sin texto extra):
+Responde ÚNICAMENTE con JSON válido, sin texto antes ni después, sin markdown, sin bloques de código.
+Estructura exacta:
 {
   "agent_name": "nombre del agente de voz",
   "voice_description": "descripción de la voz ideal: género, tono, velocidad, acento",
@@ -109,7 +132,9 @@ JSON exacto (sin texto extra):
 }`
         }]
     });
-    return parseJSON(msg.content[0].text);
+    const result = safeParseJSON(msg.content[0].text);
+    if (!result) throw new Error('Voz: respuesta JSON no válida de Claude');
+    return result;
 }
 
 async function generateAll(profile) {
