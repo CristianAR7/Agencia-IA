@@ -40,6 +40,35 @@ async function scrapeWebsite(url) {
     }
 }
 
+function parseClaudeJSON(text, businessName) {
+    // 1. Intento directo
+    try {
+        return JSON.parse(text);
+    } catch (_) {}
+
+    // 2. Extraer bloque JSON más externo con regex
+    const match = text.match(/\{[\s\S]*\}/);
+    if (match) {
+        try {
+            return JSON.parse(match[0]);
+        } catch (_) {}
+    }
+
+    // 3. Fallback: objeto de error estructurado para que el frontend no rompa
+    console.error('[pipeline] JSON parse failed. Raw response:\n', text.slice(0, 500));
+    return {
+        _parseError: true,
+        executive_summary: `Análisis generado para ${businessName}. Hubo un problema al procesar la respuesta — vuelve a intentarlo.`,
+        business_profile: { type: '—', main_services: [], target_customer: '—', digital_presence_score: 0, digital_presence_note: '—' },
+        pain_points: [],
+        opportunities: [],
+        recommended_solutions: [],
+        proposal: { package: '—', setup_price: 0, monthly_price: 0, setup_weeks: 0, key_features: [], roi_justification: '—' },
+        cro_score: { overall: 0, conversion: 0, trust: 0, ux: 0, recommendations: [] },
+        seo_score: { overall: 0, issues: [], quick_wins: [] }
+    };
+}
+
 async function analyzeWithClaude(businessName, sector, websiteUrl, notes, scraped) {
     const webCtx = scraped?.scraped
         ? `WEB SCRAPING (${scraped.url}):
@@ -62,7 +91,9 @@ NEGOCIO:
 - Notas: ${notes || 'Ninguna'}
 ${webCtx}
 
-Genera un informe de análisis JSON con esta estructura exacta (sin texto extra):
+IMPORTANTE: Responde ÚNICAMENTE con el objeto JSON. Sin texto antes ni después. Sin bloques de código markdown. Sin explicaciones. El primer carácter de tu respuesta debe ser { y el último }.
+
+Estructura exacta:
 {
   "executive_summary": "2-3 frases sobre el negocio y su oportunidad con IA",
   "business_profile": {
@@ -111,9 +142,7 @@ Genera un informe de análisis JSON con esta estructura exacta (sin texto extra)
     });
 
     const text = msg.content[0].text.trim();
-    const match = text.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error('Claude no devolvió JSON válido');
-    return JSON.parse(match[0]);
+    return parseClaudeJSON(text, businessName);
 }
 
 async function runPipeline(businessName, sector, websiteUrl, notes) {
