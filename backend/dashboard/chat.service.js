@@ -2,8 +2,6 @@ const Anthropic = require('@anthropic-ai/sdk');
 const { v4: uuidv4 } = require('uuid');
 const db = require('./db');
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 const AVAILABLE_SKILLS = [
     { name: 'marketingskills/page-cro',          category: 'marketing',  desc: 'Optimización de conversión (CRO) de páginas web' },
     { name: 'marketingskills/seo-audit',          category: 'marketing',  desc: 'Auditoría SEO completa' },
@@ -63,6 +61,7 @@ async function sendMessage(sessionId, userMessage) {
         { role: 'user', content: userMessage }
     ];
 
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const response = await anthropic.messages.create({
         model: process.env.AI_MODEL || 'claude-sonnet-4-6',
         max_tokens: 2048,

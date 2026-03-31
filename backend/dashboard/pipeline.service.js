@@ -3,8 +3,6 @@ const cheerio = require('cheerio');
 const Anthropic = require('@anthropic-ai/sdk');
 const db = require('./db');
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 async function scrapeWebsite(url) {
     if (!url) return null;
     if (!url.startsWith('http')) url = 'https://' + url;
@@ -105,6 +103,7 @@ Genera un informe de análisis JSON con esta estructura exacta (sin texto extra)
   }
 }`;
 
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const msg = await anthropic.messages.create({
         model: process.env.AI_MODEL || 'claude-sonnet-4-6',
         max_tokens: 2500,

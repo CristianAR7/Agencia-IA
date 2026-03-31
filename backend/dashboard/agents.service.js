@@ -1,8 +1,6 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const archiver = require('archiver');
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 function parseJSON(text) {
     const match = text.match(/\{[\s\S]*\}/);
     if (!match) throw new Error('Respuesta no contiene JSON válido');
@@ -10,6 +8,7 @@ function parseJSON(text) {
 }
 
 async function generateWhatsApp(profile) {
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const msg = await anthropic.messages.create({
         model: process.env.AI_MODEL || 'claude-sonnet-4-6',
         max_tokens: 3000,
@@ -47,6 +46,7 @@ JSON exacto (sin texto extra):
 }
 
 async function generateChatbot(profile) {
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const msg = await anthropic.messages.create({
         model: process.env.AI_MODEL || 'claude-sonnet-4-6',
         max_tokens: 3500,
@@ -74,6 +74,7 @@ JSON exacto (sin texto extra):
 }
 
 async function generateVoice(profile) {
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const msg = await anthropic.messages.create({
         model: process.env.AI_MODEL || 'claude-sonnet-4-6',
         max_tokens: 3000,
