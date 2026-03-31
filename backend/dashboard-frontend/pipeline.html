@@ -223,6 +223,33 @@
 <script>
 let currentClientId = null;
 
+// ── Pre-relleno desde Notion Hub ─────────────────────────────────────────────
+(function prefillFromNotion() {
+  const raw = sessionStorage.getItem('pipeline_prefill');
+  if (!raw) return;
+  sessionStorage.removeItem('pipeline_prefill');
+  try {
+    const d = JSON.parse(raw);
+    if (d.businessName) document.getElementById('businessName').value = d.businessName;
+    if (d.websiteUrl)   document.getElementById('websiteUrl').value   = d.websiteUrl;
+    if (d.notes)        document.getElementById('notes').value        = d.notes;
+    if (d.sector) {
+      const sel = document.getElementById('sector');
+      // intento exact match, luego partial
+      const opts = Array.from(sel.options);
+      const match = opts.find(o => o.value === d.sector.toLowerCase()) ||
+                    opts.find(o => d.sector.toLowerCase().includes(o.value) || o.value.includes(d.sector.toLowerCase()));
+      if (match) sel.value = match.value;
+    }
+    // Banner informativo
+    const form = document.getElementById('form-section');
+    const banner = document.createElement('div');
+    banner.style.cssText = 'background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:0.6rem 1rem;font-size:0.82rem;color:#c4b5fd;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.5rem';
+    banner.innerHTML = '<i class="fa-solid fa-link"></i> Datos cargados desde Notion — revisa y lanza el análisis.';
+    form.insertBefore(banner, form.firstChild);
+  } catch(e) {}
+})();
+
 document.getElementById('pipeline-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 

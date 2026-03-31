@@ -116,13 +116,13 @@
         </div>
         <div style="display:flex;gap:0.5rem;align-items:center">
           <select id="notion-filter" class="select" style="font-size:0.8rem;padding:0.35rem 0.75rem;width:auto" onchange="filterNotionLeads(this.value)">
-            <option value="">Todos</option>
+            <option value="">Todos los estados</option>
             <option value="Nuevo">Nuevo</option>
             <option value="Contactado">Contactado</option>
             <option value="Propuesta">Propuesta</option>
             <option value="Cerrado">Cerrado</option>
           </select>
-          <button class="btn btn-ghost btn-sm" onclick="loadNotionLeads()">
+          <button class="btn btn-ghost btn-sm" onclick="loadNotionLeads()" title="Recargar">
             <i class="fa-solid fa-rotate"></i>
           </button>
         </div>
@@ -137,7 +137,15 @@
   </main>
 </div>
 
-<div id="toast"></div>
+<!-- ── Modal detalle lead ──────────────────────────────────────────────────── -->
+<div id="lead-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:1rem;overflow-y:auto" onclick="if(event.target===this)closeLead()">
+  <div style="max-width:640px;margin:2rem auto;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative">
+    <button onclick="closeLead()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text-muted);font-size:1.25rem;cursor:pointer;line-height:1">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <div id="lead-modal-content"></div>
+  </div>
+</div>
 
 <script src="/dashboard/assets/dashboard.js"></script>
 <script>
@@ -207,35 +215,59 @@ function statusBadge(status) {
   return `<span style="display:inline-block;padding:0.2rem 0.6rem;border-radius:9999px;font-size:0.72rem;font-weight:600;background:${c.bg};border:1px solid ${c.border};color:${c.text}">${esc(status || '—')}</span>`;
 }
 
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  if (isNaN(dt)) return d;
+  return dt.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: '2-digit' });
+}
+
 function renderNotionLeads(leads) {
   const el = document.getElementById('notion-leads-list');
   if (!leads.length) {
     el.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--text-muted);font-size:0.875rem">No hay leads en Notion${document.getElementById('notion-filter').value ? ' con este filtro' : ''}.</div>`;
     return;
   }
-  el.innerHTML = `<table style="width:100%;border-collapse:collapse">
+  el.innerHTML = `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:700px">
     <thead>
       <tr style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted)">
-        <th style="text-align:left;padding:0.5rem 0.75rem;border-bottom:1px solid var(--border)">Negocio</th>
-        <th style="text-align:left;padding:0.5rem 0.75rem;border-bottom:1px solid var(--border)">Sector</th>
+        <th style="text-align:left;padding:0.5rem 0.75rem;border-bottom:1px solid var(--border)">Nombre Negocio</th>
+        <th style="text-align:left;padding:0.5rem 0.75rem;border-bottom:1px solid var(--border)">Tipo</th>
         <th style="text-align:left;padding:0.5rem 0.75rem;border-bottom:1px solid var(--border)">Estado</th>
+        <th style="text-align:left;padding:0.5rem 0.75rem;border-bottom:1px solid var(--border)">Website</th>
+        <th style="text-align:left;padding:0.5rem 0.75rem;border-bottom:1px solid var(--border)">Próx. Seguimiento</th>
         <th style="text-align:left;padding:0.5rem 0.75rem;border-bottom:1px solid var(--border)">Acciones</th>
       </tr>
     </thead>
     <tbody>
-      ${leads.map(l => `
+      ${leads.map((l, i) => `
         <tr style="transition:background 0.1s" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
           <td style="padding:0.75rem;border-bottom:1px solid rgba(255,255,255,0.04);font-weight:600;color:white">${esc(l.businessName || '—')}</td>
           <td style="padding:0.75rem;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--text-secondary);font-size:0.875rem">${esc(l.sector || '—')}</td>
           <td style="padding:0.75rem;border-bottom:1px solid rgba(255,255,255,0.04)">${statusBadge(l.status)}</td>
+          <td style="padding:0.75rem;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.8rem">
+            ${l.website ? `<a href="${esc(l.website)}" target="_blank" rel="noopener" style="color:#93c5fd;text-decoration:none" title="${esc(l.website)}">
+              <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem"></i>
+              ${esc(l.website.replace(/^https?:\/\//, '').split('/')[0])}
+            </a>` : '<span style="color:var(--text-muted)">—</span>'}
+          </td>
+          <td style="padding:0.75rem;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.8rem;color:${l.nextFollowUp && new Date(l.nextFollowUp) < new Date() ? '#fca5a5' : 'var(--text-secondary)'}">
+            ${l.nextFollowUp && new Date(l.nextFollowUp) < new Date() ? '<i class="fa-solid fa-circle-exclamation" style="margin-right:0.3rem;font-size:0.7rem"></i>' : ''}
+            ${fmtDate(l.nextFollowUp)}
+          </td>
           <td style="padding:0.75rem;border-bottom:1px solid rgba(255,255,255,0.04)">
-            <a href="/dashboard/pipeline.html" class="btn btn-ghost btn-sm" style="font-size:0.75rem">
-              <i class="fa-solid fa-magnifying-glass-chart"></i> Abrir pipeline
-            </a>
+            <div style="display:flex;gap:0.4rem">
+              <button class="btn btn-ghost btn-sm" style="font-size:0.72rem" onclick="openLead(${i})" title="Ver detalle">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+              <button class="btn btn-ghost btn-sm" style="font-size:0.72rem" onclick="loadInPipeline(${i})" title="Cargar en Pipeline">
+                <i class="fa-solid fa-magnifying-glass-chart"></i> Pipeline
+              </button>
+            </div>
           </td>
         </tr>`).join('')}
     </tbody>
-  </table>`;
+  </table></div>`;
 }
 
 function filterNotionLeads(status) {
@@ -253,6 +285,103 @@ async function loadNotionLeads() {
   } catch (err) {
     el.innerHTML = `<div style="padding:1rem;font-size:0.875rem;color:var(--text-muted)"><i class="fa-solid fa-triangle-exclamation" style="color:#fbbf24;margin-right:0.4rem"></i>Notion no configurado. Añade <code>NOTION_API_KEY</code> y <code>NOTION_DATABASE_ID</code> en Railway.</div>`;
   }
+}
+
+// ── Modal detalle lead ───────────────────────────────────────────────────────
+
+function row(label, value, mono) {
+  if (!value && value !== 0) return '';
+  const val = mono ? `<code style="font-family:monospace;font-size:0.8rem;background:rgba(255,255,255,0.06);padding:0.15rem 0.4rem;border-radius:4px">${esc(String(value))}</code>`
+                   : `<span style="color:var(--text-secondary)">${esc(String(value))}</span>`;
+  return `<div style="display:flex;gap:1rem;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.04)">
+    <span style="min-width:160px;font-size:0.78rem;color:var(--text-muted);padding-top:0.05rem">${label}</span>
+    ${val}
+  </div>`;
+}
+
+function openLead(idx) {
+  const leads = allNotionLeads.filter(l => {
+    const f = document.getElementById('notion-filter').value;
+    return !f || l.status === f;
+  });
+  const l = leads[idx];
+  if (!l) return;
+
+  const stars = l.googleRating ? '★'.repeat(Math.round(l.googleRating)) + '☆'.repeat(5 - Math.round(l.googleRating)) : null;
+
+  document.getElementById('lead-modal-content').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;gap:1rem">
+      <div>
+        <h2 style="font-weight:800;font-size:1.2rem;color:white;margin-bottom:0.35rem">${esc(l.businessName || '—')}</h2>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+          ${statusBadge(l.status)}
+          ${l.sector ? `<span style="font-size:0.75rem;color:var(--text-muted);padding:0.15rem 0;align-self:center">${esc(l.sector)}</span>` : ''}
+        </div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="loadInPipeline(${idx})" style="white-space:nowrap;flex-shrink:0">
+        <i class="fa-solid fa-magnifying-glass-chart"></i> Cargar en Pipeline
+      </button>
+    </div>
+
+    <div style="margin-bottom:1rem">
+      ${row('Website', l.website)}
+      ${row('Email', l.email)}
+      ${row('Teléfono', l.phone)}
+      ${row('Ubicación', l.location)}
+      ${l.price != null ? row('Precio propuesta', `€${l.price.toLocaleString('es-ES')}`) : ''}
+      ${row('Fecha Contacto', fmtDate(l.contactDate))}
+      ${row('Próximo Seguimiento', fmtDate(l.nextFollowUp))}
+      ${stars ? row('Rating Google', `${stars} (${l.googleRating}) · ${l.numReviews || 0} reseñas`) : ''}
+    </div>
+
+    ${l.painPoints ? `<div style="margin-bottom:1rem">
+      <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:0.5rem">Pain Points</div>
+      <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:0.75rem 1rem;font-size:0.85rem;color:var(--text-secondary);line-height:1.6">${esc(l.painPoints)}</div>
+    </div>` : ''}
+
+    ${l.solution ? `<div style="margin-bottom:1rem">
+      <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:0.5rem">Solución CRIAL</div>
+      <div style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.2);border-radius:8px;padding:0.75rem 1rem;font-size:0.85rem;color:var(--text-secondary);line-height:1.6">${esc(l.solution)}</div>
+    </div>` : ''}
+
+    ${l.notionUrl ? `<div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)">
+      <a href="${esc(l.notionUrl)}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm" style="font-size:0.8rem">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver en Notion
+      </a>
+    </div>` : ''}
+  `;
+
+  document.getElementById('lead-modal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLead() {
+  document.getElementById('lead-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function loadInPipeline(idx) {
+  const leads = allNotionLeads.filter(l => {
+    const f = document.getElementById('notion-filter').value;
+    return !f || l.status === f;
+  });
+  const l = leads[idx];
+  if (!l) return;
+
+  // Almacenar datos del lead para que Pipeline los pre-rellene
+  sessionStorage.setItem('pipeline_prefill', JSON.stringify({
+    businessName: l.businessName || '',
+    sector:       l.sector || '',
+    websiteUrl:   l.website || '',
+    notes:        [
+      l.painPoints ? `Pain Points: ${l.painPoints}` : '',
+      l.solution   ? `Solución CRIAL: ${l.solution}` : '',
+      l.location   ? `Ubicación: ${l.location}` : '',
+    ].filter(Boolean).join('\n')
+  }));
+
+  closeLead();
+  window.location.href = '/dashboard/pipeline.html';
 }
 
 loadNotionLeads();
