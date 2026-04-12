@@ -59,7 +59,9 @@ Estructura exacta:
 }`
         }]
     });
-    const result = safeParseJSON(msg.content[0].text);
+    const text = msg.content[0].text;
+    console.log('[agents] RAW RESPONSE:', text.substring(0, 500));
+    const result = safeParseJSON(text);
     if (!result) throw new Error('WhatsApp: respuesta JSON no válida de Claude');
     return result;
 }
