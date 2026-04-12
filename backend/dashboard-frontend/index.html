@@ -137,6 +137,56 @@
   </main>
 </div>
 
+<!-- ── Modal email ────────────────────────────────────────────────────────── -->
+<div id="email-modal" style="display:none;position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);padding:1rem;overflow-y:auto" onclick="if(event.target===this)closeEmailModal()">
+  <div style="max-width:580px;margin:2rem auto;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative">
+    <button onclick="closeEmailModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text-muted);font-size:1.25rem;cursor:pointer;line-height:1">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem">
+      <div style="width:36px;height:36px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <i class="fa-solid fa-envelope" style="color:#6ee7b7;font-size:0.85rem"></i>
+      </div>
+      <div>
+        <h3 style="font-weight:700;color:white;font-size:1rem;margin-bottom:0.1rem" id="email-modal-title">Enviar email</h3>
+        <p style="font-size:0.75rem;color:var(--text-muted)">Borrador generado por IA basado en el perfil del lead</p>
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:1rem">
+      <label class="label">Para</label>
+      <input class="input" type="email" id="email-to" placeholder="correo@negocio.com">
+    </div>
+
+    <div class="field" style="margin-bottom:1rem">
+      <label class="label">Asunto</label>
+      <input class="input" type="text" id="email-subject" placeholder="Cargando borrador...">
+    </div>
+
+    <div class="field" style="margin-bottom:1.5rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+        <label class="label" style="margin:0">Cuerpo</label>
+        <button class="btn btn-ghost btn-sm" id="regen-btn" onclick="regenerateDraft()" style="font-size:0.75rem">
+          <i class="fa-solid fa-rotate"></i> Regenerar
+        </button>
+      </div>
+      <div id="email-draft-loading" style="display:none;text-align:center;padding:2rem;color:var(--text-muted);font-size:0.85rem">
+        <div class="spinner" style="margin:0 auto 0.75rem"></div>
+        Claude está redactando el email...
+      </div>
+      <textarea class="textarea" id="email-body" rows="10" placeholder="Generando borrador..."></textarea>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeEmailModal()">Cancelar</button>
+      <button class="btn btn-primary" id="email-send-btn" onclick="sendEmailNow()">
+        <i class="fa-solid fa-paper-plane"></i> Enviar
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- ── Modal editar lead (Notion) ─────────────────────────────────────────── -->
 <div id="edit-modal" style="display:none;position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);padding:1rem;overflow-y:auto" onclick="if(event.target===this)closeEditLead()">
   <div style="max-width:540px;margin:2rem auto;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative">
@@ -322,6 +372,9 @@ function renderNotionLeads(leads) {
               <button class="btn btn-ghost btn-sm" style="font-size:0.72rem;color:#fcd34d" onclick="openEditLead(${i})" title="Editar en Notion">
                 <i class="fa-solid fa-pen"></i>
               </button>
+              ${l.email ? `<button class="btn btn-ghost btn-sm" style="font-size:0.72rem;color:#6ee7b7" onclick="openEmailModal(${i})" title="Enviar email">
+                <i class="fa-solid fa-envelope"></i>
+              </button>` : ''}
               <button class="btn btn-ghost btn-sm" style="font-size:0.72rem" onclick="loadInPipeline(${i})" title="Cargar en Pipeline">
                 <i class="fa-solid fa-magnifying-glass-chart"></i> Pipeline
               </button>
@@ -444,6 +497,94 @@ function loadInPipeline(idx) {
 
   closeLead();
   window.location.href = '/dashboard/pipeline.html';
+}
+
+// ── Modal email ──────────────────────────────────────────────────────────────
+
+let _emailLeadData = null;
+
+async function openEmailModal(idx) {
+  const leads = allNotionLeads.filter(l => {
+    const f = document.getElementById('notion-filter').value;
+    return !f || l.status === f;
+  });
+  const l = leads[idx];
+  if (!l) return;
+
+  _emailLeadData = l;
+  document.getElementById('email-modal-title').textContent = l.businessName || 'Email';
+  document.getElementById('email-to').value      = l.email || '';
+  document.getElementById('email-subject').value = '';
+  document.getElementById('email-body').value    = '';
+
+  document.getElementById('email-modal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+
+  await generateEmailDraft();
+}
+
+function closeEmailModal() {
+  document.getElementById('email-modal').style.display = 'none';
+  document.body.style.overflow = '';
+  _emailLeadData = null;
+}
+
+async function generateEmailDraft() {
+  if (!_emailLeadData) return;
+  const l = _emailLeadData;
+
+  const loading  = document.getElementById('email-draft-loading');
+  const bodyArea = document.getElementById('email-body');
+  const regenBtn = document.getElementById('regen-btn');
+
+  loading.style.display  = 'block';
+  bodyArea.style.display = 'none';
+  setLoading(regenBtn, true, 'Generando...');
+
+  try {
+    const draft = await API.post('/email/draft', {
+      businessName:  l.businessName,
+      sector:        l.sector,
+      painPoints:    l.painPoints,
+      solution:      l.solution,
+    });
+
+    document.getElementById('email-subject').value = draft.subject || '';
+    bodyArea.value = draft.body || '';
+  } catch (err) {
+    bodyArea.value = `Hola,\n\nMe pongo en contacto desde CRIAL Solutions...\n\n(Error al generar borrador: ${err.message})`;
+  } finally {
+    loading.style.display  = 'none';
+    bodyArea.style.display = 'block';
+    setLoading(regenBtn, false);
+  }
+}
+
+async function regenerateDraft() {
+  await generateEmailDraft();
+}
+
+async function sendEmailNow() {
+  const to      = document.getElementById('email-to').value.trim();
+  const subject = document.getElementById('email-subject').value.trim();
+  const body    = document.getElementById('email-body').value.trim();
+
+  if (!to)      { toast('Falta el destinatario', 'error'); return; }
+  if (!subject) { toast('Falta el asunto', 'error'); return; }
+  if (!body)    { toast('Falta el cuerpo del email', 'error'); return; }
+
+  const btn = document.getElementById('email-send-btn');
+  setLoading(btn, true, 'Enviando...');
+
+  try {
+    await API.post('/email/send', { to, subject, body });
+    setLoading(btn, false);
+    closeEmailModal();
+    toast(`Email enviado a ${to}`, 'success');
+  } catch (err) {
+    setLoading(btn, false);
+    toast('Error al enviar: ' + err.message, 'error', 6000);
+  }
 }
 
 // ── Modal editar lead ────────────────────────────────────────────────────────

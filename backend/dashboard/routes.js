@@ -171,4 +171,31 @@ router.post('/notion/leads', async (req, res) => {
     }
 });
 
+// ── EMAIL ─────────────────────────────────────────────────────────────────────
+const email = require('./email.service');
+
+router.post('/email/draft', async (req, res) => {
+    const { businessName, sector, painPoints, solution, recipientName } = req.body;
+    if (!businessName?.trim())
+        return res.status(400).json({ error: 'businessName es obligatorio' });
+    try {
+        const draft = await email.generateDraft({ businessName, sector, painPoints, solution, recipientName });
+        res.json(draft);
+    } catch (err) {
+        console.error('[email/draft] error:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.post('/email/send', async (req, res) => {
+    const { to, subject, body, replyTo } = req.body;
+    try {
+        const result = await email.sendEmail({ to, subject, body, replyTo });
+        res.json(result);
+    } catch (err) {
+        console.error('[email/send] error:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = router;
