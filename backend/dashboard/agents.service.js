@@ -1,29 +1,30 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const archiver = require('archiver');
 
-function safeParseJSON(text) {
-    // 0. Limpiar bloques de código markdown
-    text = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+function safeParseJSON(raw) {
+  // 1. Limpiar markdown code blocks
+  let text = raw
+    .replace(/```json\s*/gi, '')
+    .replace(/```\s*/gi, '')
+    .trim();
 
-    // 1. Intentar parseo directo
-    try { return JSON.parse(text); } catch {}
+  // 2. Intentar parseo directo
+  try { return JSON.parse(text); } catch {}
 
-    // 2. Extraer bloque JSON con regex
-    const match = text.match(/\{[\s\S]*\}/);
-    if (match) {
-        try { return JSON.parse(match[0]); } catch {}
-    }
+  // 3. Extraer bloque JSON con regex
+  const match = text.match(/\{[\s\S]*\}/);
+  if (match) { try { return JSON.parse(match[0]); } catch {} }
 
-    // 3. Limpiar caracteres problemáticos y reintentar
-    try {
-        const cleaned = text
-            .replace(/[\x00-\x1F\x7F]/g, ' ')
-            .replace(/,\s*([}\]])/g, '$1')
-            .match(/\{[\s\S]*\}/)?.[0];
-        if (cleaned) return JSON.parse(cleaned);
-    } catch {}
+  // 4. Limpiar caracteres problemáticos
+  try {
+    const cleaned = text
+      .replace(/[\x00-\x1F\x7F]/g, ' ')
+      .replace(/,\s*([}\]])/g, '$1')
+      .match(/\{[\s\S]*\}/)?.[0];
+    if (cleaned) return JSON.parse(cleaned);
+  } catch {}
 
-    return null;
+  return null;
 }
 
 async function generateWhatsApp(profile) {
