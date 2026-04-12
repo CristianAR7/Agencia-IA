@@ -148,7 +148,14 @@ router.get('/notion/leads', async (req, res) => {
 
 router.patch('/notion/leads/:id', async (req, res) => {
     try {
-        const result = await notion.updateLeadStatus(req.params.id, req.body.status);
+        const { status, nextFollowUp, price, painPoints, solution } = req.body;
+        const result = await notion.updateLead(req.params.id, {
+            ...(status        !== undefined && { status }),
+            ...(nextFollowUp  !== undefined && { nextFollowUp }),
+            ...(price         !== undefined && { price }),
+            ...(painPoints    !== undefined && { painPoints }),
+            ...(solution      !== undefined && { solution }),
+        });
         res.json(result);
     } catch (err) {
         res.status(500).json({ error: err.message });

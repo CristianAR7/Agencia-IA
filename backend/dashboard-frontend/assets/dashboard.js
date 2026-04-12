@@ -22,6 +22,17 @@ const API = {
         return data;
     },
 
+    async patch(path, body) {
+        const res = await fetch(this.base + path, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
+        return data;
+    },
+
     async download(path, body, filename) {
         const res = await fetch(this.base + path, {
             method: 'POST',

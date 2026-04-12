@@ -106,16 +106,37 @@ async function getLeads() {
 }
 
 async function updateLeadStatus(pageId, status) {
+    return updateLead(pageId, { status });
+}
+
+// updateLead — actualiza cualquier combinación de campos editables
+async function updateLead(pageId, fields) {
     const notion = getClient();
+    const properties = {};
 
-    await notion.pages.update({
-        page_id: pageId,
-        properties: {
-            'Estado': { select: { name: status } }
-        }
-    });
+    if (fields.status !== undefined)
+        properties['Estado'] = { select: { name: fields.status } };
 
-    return { success: true, pageId, status };
+    if (fields.nextFollowUp !== undefined)
+        properties['Próximo Seguimiento'] = fields.nextFollowUp
+            ? { date: { start: fields.nextFollowUp } }
+            : { date: null };
+
+    if (fields.price !== undefined)
+        properties['Precio €'] = { number: fields.price === '' ? null : Number(fields.price) };
+
+    if (fields.painPoints !== undefined)
+        properties['Pain Points'] = {
+            rich_text: fields.painPoints ? [{ text: { content: fields.painPoints } }] : []
+        };
+
+    if (fields.solution !== undefined)
+        properties['Solución CRIAL'] = {
+            rich_text: fields.solution ? [{ text: { content: fields.solution } }] : []
+        };
+
+    await notion.pages.update({ page_id: pageId, properties });
+    return { success: true, pageId, updated: Object.keys(fields) };
 }
 
 async function createLead({ businessName, sector, websiteUrl, status = 'Nuevo', email, phone, location }) {
@@ -141,4 +162,4 @@ async function createLead({ businessName, sector, websiteUrl, status = 'Nuevo', 
     return mapPage(response);
 }
 
-module.exports = { getLeads, updateLeadStatus, createLead };
+module.exports = { getLeads, updateLeadStatus, updateLead, createLead };

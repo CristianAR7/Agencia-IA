@@ -137,6 +137,65 @@
   </main>
 </div>
 
+<!-- ── Modal editar lead (Notion) ─────────────────────────────────────────── -->
+<div id="edit-modal" style="display:none;position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);padding:1rem;overflow-y:auto" onclick="if(event.target===this)closeEditLead()">
+  <div style="max-width:540px;margin:2rem auto;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative">
+    <button onclick="closeEditLead()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text-muted);font-size:1.25rem;cursor:pointer;line-height:1">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem">
+      <div style="width:36px;height:36px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <i class="fa-solid fa-pen" style="color:#fcd34d;font-size:0.85rem"></i>
+      </div>
+      <div>
+        <h3 style="font-weight:700;color:white;font-size:1rem;margin-bottom:0.1rem" id="edit-modal-title">Editar lead</h3>
+        <p style="font-size:0.75rem;color:var(--text-muted)">Los cambios se guardan directamente en Notion</p>
+      </div>
+    </div>
+
+    <input type="hidden" id="edit-notion-id">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+      <div class="field">
+        <label class="label">Estado</label>
+        <select class="select" id="edit-status">
+          <option value="Nuevo">Nuevo</option>
+          <option value="Contactado">Contactado</option>
+          <option value="Propuesta">Propuesta</option>
+          <option value="Cerrado">Cerrado</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="label">Próximo seguimiento</label>
+        <input class="input" type="date" id="edit-follow-up">
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:1rem">
+      <label class="label">Precio propuesta (€)</label>
+      <input class="input" type="number" id="edit-price" placeholder="Ej: 2500" min="0" step="50">
+    </div>
+
+    <div class="field" style="margin-bottom:1rem">
+      <label class="label">Pain Points</label>
+      <textarea class="textarea" id="edit-pain-points" rows="3" placeholder="Problemas detectados en el negocio..."></textarea>
+    </div>
+
+    <div class="field" style="margin-bottom:1.5rem">
+      <label class="label">Solución CRIAL</label>
+      <textarea class="textarea" id="edit-solution" rows="3" placeholder="Solución propuesta por CRIAL..."></textarea>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeEditLead()">Cancelar</button>
+      <button class="btn btn-primary" id="edit-save-btn" onclick="saveLeadEdit()">
+        <i class="fa-solid fa-floppy-disk"></i> Guardar en Notion
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- ── Modal detalle lead ──────────────────────────────────────────────────── -->
 <div id="lead-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:1rem;overflow-y:auto" onclick="if(event.target===this)closeLead()">
   <div style="max-width:640px;margin:2rem auto;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative">
@@ -260,6 +319,9 @@ function renderNotionLeads(leads) {
               <button class="btn btn-ghost btn-sm" style="font-size:0.72rem" onclick="openLead(${i})" title="Ver detalle">
                 <i class="fa-solid fa-eye"></i>
               </button>
+              <button class="btn btn-ghost btn-sm" style="font-size:0.72rem;color:#fcd34d" onclick="openEditLead(${i})" title="Editar en Notion">
+                <i class="fa-solid fa-pen"></i>
+              </button>
               <button class="btn btn-ghost btn-sm" style="font-size:0.72rem" onclick="loadInPipeline(${i})" title="Cargar en Pipeline">
                 <i class="fa-solid fa-magnifying-glass-chart"></i> Pipeline
               </button>
@@ -382,6 +444,79 @@ function loadInPipeline(idx) {
 
   closeLead();
   window.location.href = '/dashboard/pipeline.html';
+}
+
+// ── Modal editar lead ────────────────────────────────────────────────────────
+
+let _editIdx = null;
+
+function openEditLead(idx) {
+  const leads = allNotionLeads.filter(l => {
+    const f = document.getElementById('notion-filter').value;
+    return !f || l.status === f;
+  });
+  const l = leads[idx];
+  if (!l) return;
+
+  _editIdx = idx;
+  document.getElementById('edit-notion-id').value     = l.id;
+  document.getElementById('edit-modal-title').textContent = esc(l.businessName || 'Lead');
+  document.getElementById('edit-status').value        = l.status || 'Nuevo';
+  document.getElementById('edit-follow-up').value     = l.nextFollowUp || '';
+  document.getElementById('edit-price').value         = l.price != null ? l.price : '';
+  document.getElementById('edit-pain-points').value   = l.painPoints || '';
+  document.getElementById('edit-solution').value      = l.solution || '';
+
+  document.getElementById('edit-modal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeEditLead() {
+  document.getElementById('edit-modal').style.display = 'none';
+  document.body.style.overflow = '';
+  _editIdx = null;
+}
+
+async function saveLeadEdit() {
+  const pageId      = document.getElementById('edit-notion-id').value;
+  const status      = document.getElementById('edit-status').value;
+  const nextFollowUp = document.getElementById('edit-follow-up').value || null;
+  const priceRaw    = document.getElementById('edit-price').value;
+  const painPoints  = document.getElementById('edit-pain-points').value.trim();
+  const solution    = document.getElementById('edit-solution').value.trim();
+  const price       = priceRaw !== '' ? Number(priceRaw) : null;
+
+  const btn = document.getElementById('edit-save-btn');
+  setLoading(btn, true, 'Guardando...');
+
+  try {
+    await API.patch(`/notion/leads/${pageId}`, { status, nextFollowUp, price, painPoints, solution });
+
+    // Actualizar el array local para reflejar los cambios sin recargar
+    const leads = allNotionLeads.filter(l => {
+      const f = document.getElementById('notion-filter').value;
+      return !f || l.status === f;
+    });
+    const l = leads[_editIdx];
+    if (l) {
+      l.status       = status;
+      l.nextFollowUp = nextFollowUp;
+      l.price        = price;
+      l.painPoints   = painPoints;
+      l.solution     = solution;
+      // Sync back to allNotionLeads
+      const master = allNotionLeads.find(x => x.id === l.id);
+      if (master) Object.assign(master, { status, nextFollowUp, price, painPoints, solution });
+    }
+
+    setLoading(btn, false);
+    closeEditLead();
+    filterNotionLeads(document.getElementById('notion-filter').value);
+    toast('Lead actualizado en Notion', 'success');
+  } catch (err) {
+    setLoading(btn, false);
+    toast('Error al guardar: ' + err.message, 'error');
+  }
 }
 
 loadNotionLeads();
