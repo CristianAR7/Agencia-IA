@@ -2,6 +2,9 @@ const Anthropic = require('@anthropic-ai/sdk');
 const archiver = require('archiver');
 
 function safeParseJSON(text) {
+    // 0. Limpiar bloques de código markdown
+    text = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+
     // 1. Intentar parseo directo
     try { return JSON.parse(text); } catch {}
 
