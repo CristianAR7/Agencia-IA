@@ -202,15 +202,45 @@
         </div>
       </div>
 
-      <!-- CTA -->
-      <div class="glass" style="padding:1.5rem;border-color:rgba(59,130,246,0.3);display:flex;align-items:center;justify-content:space-between;gap:1rem">
-        <div>
-          <div style="font-weight:700;color:white;margin-bottom:0.25rem">¿Listo para generar los agentes?</div>
-          <div style="font-size:0.85rem;color:var(--text-secondary)">Genera agente WhatsApp, chatbot web y agente de voz para este cliente en un clic.</div>
+      <!-- CTA row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="glass" style="padding:1.25rem;border-color:rgba(59,130,246,0.3)">
+          <div style="font-weight:700;color:white;margin-bottom:0.25rem;font-size:0.9rem">¿Listo para generar los agentes?</div>
+          <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.9rem">WhatsApp + chatbot web + agente de voz listos para desplegar.</div>
+          <a id="go-agents-btn" href="/dashboard/agents.html" class="btn btn-primary btn-sm" style="white-space:nowrap">
+            <i class="fa-solid fa-robot"></i> Generar Agentes →
+          </a>
         </div>
-        <a id="go-agents-btn" href="/dashboard/agents.html" class="btn btn-primary" style="white-space:nowrap">
-          <i class="fa-solid fa-robot"></i> Generar Agentes →
-        </a>
+        <div class="glass" style="padding:1.25rem;border-color:rgba(16,185,129,0.25)">
+          <div style="font-weight:700;color:white;margin-bottom:0.25rem;font-size:0.9rem">Web demo en 30 segundos</div>
+          <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.9rem">Claude genera una landing page completa para presentar al cliente.</div>
+          <button id="webgen-btn" class="btn btn-sm" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.35);color:#6ee7b7;white-space:nowrap" onclick="generateWebDemo()">
+            <i class="fa-solid fa-globe"></i> Generar web demo
+          </button>
+        </div>
+      </div>
+
+      <!-- Web demo preview (hidden until generated) -->
+      <div id="webgen-section" class="hidden glass" style="padding:1.5rem;margin-top:1rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <div>
+            <h3 style="font-weight:700;color:white;font-size:0.95rem;margin-bottom:0.2rem">Web demo generada</h3>
+            <p style="font-size:0.78rem;color:var(--text-muted)">Preview de la landing page para el cliente</p>
+          </div>
+          <div style="display:flex;gap:0.5rem">
+            <button class="btn btn-ghost btn-sm" onclick="openDemoTab()">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir
+            </button>
+            <button class="btn btn-ghost btn-sm" onclick="downloadDemo()">
+              <i class="fa-solid fa-download"></i> Descargar HTML
+            </button>
+          </div>
+        </div>
+        <div id="webgen-loading" style="display:none;text-align:center;padding:2rem;color:var(--text-muted)">
+          <div class="spinner" style="margin:0 auto 0.75rem"></div>
+          Claude está generando la landing page...
+        </div>
+        <iframe id="webgen-iframe" style="width:100%;height:500px;border:none;border-radius:8px;background:white;display:none" sandbox="allow-scripts allow-same-origin"></iframe>
       </div>
     </div>
 
@@ -354,6 +384,58 @@ function renderResults(r, businessName) {
   }
 
   initCollapsibles();
+}
+
+// ── Web demo generator ────────────────────────────────────────────────────────
+
+let _demoUrl = null;
+
+async function generateWebDemo() {
+  if (!currentClientId) { toast('Primero ejecuta un análisis', 'error'); return; }
+
+  const btn = document.getElementById('webgen-btn');
+  setLoading(btn, true, 'Generando...');
+
+  const section  = document.getElementById('webgen-section');
+  const loading  = document.getElementById('webgen-loading');
+  const iframe   = document.getElementById('webgen-iframe');
+
+  section.classList.remove('hidden');
+  loading.style.display = 'block';
+  iframe.style.display  = 'none';
+
+  try {
+    const result = await API.post('/webgen/generate', {
+      clientId:       currentClientId,
+      businessName:   document.getElementById('businessName').value.trim(),
+      sector:         document.getElementById('sector').value,
+      services:       '',
+      websiteUrl:     document.getElementById('websiteUrl').value.trim() || null,
+    });
+
+    _demoUrl = result.url;
+    iframe.src            = result.url;
+    loading.style.display = 'none';
+    iframe.style.display  = 'block';
+    setLoading(btn, false);
+    toast('Web demo lista', 'success');
+  } catch (err) {
+    loading.style.display = 'none';
+    setLoading(btn, false);
+    toast('Error al generar demo: ' + err.message, 'error', 6000);
+  }
+}
+
+function openDemoTab() {
+  if (_demoUrl) window.open(_demoUrl, '_blank');
+}
+
+function downloadDemo() {
+  if (!_demoUrl) return;
+  const a = document.createElement('a');
+  a.href = _demoUrl;
+  a.download = `demo-${currentClientId}.html`;
+  a.click();
 }
 </script>
 </body>

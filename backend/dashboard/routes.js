@@ -171,6 +171,28 @@ router.post('/notion/leads', async (req, res) => {
     }
 });
 
+// ── WEBGEN ────────────────────────────────────────────────────────────────────
+const webgen = require('./webgen.service');
+
+router.post('/webgen/generate', async (req, res) => {
+    const { clientId, businessName, sector, services, targetCustomer, colors, phone, email, website } = req.body;
+    if (!businessName?.trim() || !sector?.trim())
+        return res.status(400).json({ error: 'businessName y sector son obligatorios' });
+    if (!clientId)
+        return res.status(400).json({ error: 'clientId es obligatorio' });
+    try {
+        const result = await webgen.generateDemo({ clientId, businessName, sector, services, targetCustomer, colors, phone, email, website });
+        res.json(result);
+    } catch (err) {
+        console.error('[webgen] error:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.get('/webgen/exists/:clientId', (req, res) => {
+    res.json({ exists: webgen.demoExists(req.params.clientId) });
+});
+
 // ── EMAIL ─────────────────────────────────────────────────────────────────────
 const email = require('./email.service');
 

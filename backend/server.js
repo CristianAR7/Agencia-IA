@@ -310,6 +310,9 @@ app.get('/api/admin/leads/:id', async (req, res) => {
 app.use('/dashboard', require('express').static(path.join(__dirname, 'dashboard-frontend')));
 app.use('/dashboard/api', require('./dashboard/routes'));
 
+// Demo pages served separately so they're accessible at /dashboard/demos/:clientId.html
+// (already covered by the static middleware above since demos/ is inside dashboard-frontend/)
+
 const PORT = process.env.PORT || 3000;
 db.init()
     .then(() => {
