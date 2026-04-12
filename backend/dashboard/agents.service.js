@@ -63,7 +63,8 @@ Responde ÚNICAMENTE con JSON válido, sin texto antes ni después, sin markdown
         }]
     });
     const text = msg.content[0].text;
-    console.log('[agents] RAW RESPONSE:', text.substring(0, 500));
+    console.log('[agents] RAW LENGTH:', text.length);
+    console.log('[agents] PARSE RESULT:', safeParseJSON(text) ? 'OK' : 'FAIL');
     const result = safeParseJSON(text);
     if (!result) throw new Error('WhatsApp: respuesta JSON no válida de Claude');
     return result;
