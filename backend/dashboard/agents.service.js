@@ -31,19 +31,18 @@ async function generateWhatsApp(profile) {
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const msg = await anthropic.messages.create({
         model: process.env.AI_MODEL || 'claude-sonnet-4-6',
-        max_tokens: 3000,
+        max_tokens: 4000,
         messages: [{
             role: 'user',
-            content: `Eres experto en WhatsApp Business API. Genera configuración completa para:
+            content: `Eres experto en WhatsApp Business API. Genera configuración para:
 ${JSON.stringify(profile, null, 2)}
 
 Responde ÚNICAMENTE con JSON válido, sin texto antes ni después, sin markdown, sin bloques de código.
-Estructura exacta:
 {
-  "agent_name": "nombre del agente (ej: Asistente de NombreNegocio)",
-  "personality": "descripción de personalidad, tono y estilo comunicativo",
-  "system_prompt": "prompt COMPLETO de sistema para Claude (mínimo 300 palabras): incluye rol, servicios del negocio, cómo responder, qué NO decir, cómo calificar leads, cuándo derivar a humano",
-  "welcome_message": "mensaje de bienvenida exacto al iniciar conversación",
+  "agent_name": "Asistente de [NombreNegocio]",
+  "personality": "máximo 100 palabras: tono, estilo, cómo se presenta",
+  "system_prompt": "máximo 200 palabras: rol, servicios clave, cómo responder, cuándo derivar a humano",
+  "welcome_message": "mensaje de bienvenida breve (1-2 frases)",
   "quick_replies": [
     {"id": "1", "title": "Pedir cita", "payload": "CITA"},
     {"id": "2", "title": "Ver servicios", "payload": "SERVICIOS"},
@@ -51,14 +50,14 @@ Estructura exacta:
     {"id": "4", "title": "Hablar con persona", "payload": "HUMANO"}
   ],
   "flows": {
-    "appointment": ["Paso 1: preguntar nombre", "Paso 2: fecha y hora", "Paso 3: confirmar"],
-    "faq": { "pregunta frecuente 1": "respuesta", "pregunta frecuente 2": "respuesta" },
-    "escalation_triggers": ["cuando el cliente está molesto", "cuando pide hablar con responsable"]
+    "appointment": ["paso 1", "paso 2", "paso 3"],
+    "faq": {"pregunta clave": "respuesta breve"},
+    "escalation_triggers": ["trigger 1", "trigger 2"]
   },
   "twilio_setup": {
     "webhook_url_format": "https://TU_DOMINIO/webhooks/whatsapp",
     "required_env_vars": ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_WHATSAPP_NUMBER", "ANTHROPIC_API_KEY"],
-    "deployment_steps": ["Paso 1", "Paso 2", "Paso 3"]
+    "deployment_steps": ["paso 1", "paso 2", "paso 3"]
   }
 }`
         }]
@@ -74,23 +73,21 @@ async function generateChatbot(profile) {
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const msg = await anthropic.messages.create({
         model: process.env.AI_MODEL || 'claude-sonnet-4-6',
-        max_tokens: 3500,
+        max_tokens: 4000,
         messages: [{
             role: 'user',
-            content: `Eres experto en chatbots web embebibles. Genera configuración completa para:
+            content: `Eres experto en chatbots web embebibles. Genera configuración para:
 ${JSON.stringify(profile, null, 2)}
 
 Responde ÚNICAMENTE con JSON válido, sin texto antes ni después, sin markdown, sin bloques de código.
-Estructura exacta:
 {
   "agent_name": "nombre del bot",
   "avatar_emoji": "emoji representativo",
   "color_primary": "#2563eb",
   "color_secondary": "#1e40af",
-  "system_prompt": "prompt COMPLETO de sistema para Claude (mínimo 300 palabras)",
-  "welcome_message": "mensaje inicial al abrir el chat",
+  "system_prompt": "máximo 200 palabras: rol, servicios clave, cómo responder, límites",
+  "welcome_message": "mensaje inicial breve (1-2 frases)",
   "suggested_questions": ["pregunta 1", "pregunta 2", "pregunta 3", "pregunta 4"],
-  "embed_snippet": "<!-- WIDGET CRIAL CHATBOT -->\\n<div id=\\"crial-chat-widget\\"></div>\\n<script>\\n(function() {\\n  const config = {\\n    businessName: \\"NombreNegocio\\",\\n    agentName: \\"NombreBot\\",\\n    primaryColor: \\"#2563eb\\",\\n    apiEndpoint: \\"https://TU_BACKEND/api/widget-chat\\",\\n    welcomeMessage: \\"Hola, ¿en qué puedo ayudarte?\\"\\n  };\\n  const btn = document.createElement(\\'button\\');\\n  btn.id = \\'crial-open\\';\\n  btn.style.cssText = \\'position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:\\' + config.primaryColor + \\';border:none;cursor:pointer;z-index:9999;font-size:24px;color:white;box-shadow:0 4px 16px rgba(0,0,0,0.3)\\';\\n  btn.innerHTML = \\'💬\\';\\n  document.body.appendChild(btn);\\n  // Full widget implementation at /dashboard/assets/widget.js\\n})();\\n</script>",
   "backend_endpoint": "/api/widget-chat",
   "rate_limit": "20 req/hora por IP"
 }`
@@ -105,31 +102,30 @@ async function generateVoice(profile) {
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const msg = await anthropic.messages.create({
         model: process.env.AI_MODEL || 'claude-sonnet-4-6',
-        max_tokens: 3000,
+        max_tokens: 4000,
         messages: [{
             role: 'user',
-            content: `Eres experto en agentes de voz con IA. Genera configuración completa para:
+            content: `Eres experto en agentes de voz con IA. Genera configuración para:
 ${JSON.stringify(profile, null, 2)}
 
 Responde ÚNICAMENTE con JSON válido, sin texto antes ni después, sin markdown, sin bloques de código.
-Estructura exacta:
 {
   "agent_name": "nombre del agente de voz",
-  "voice_description": "descripción de la voz ideal: género, tono, velocidad, acento",
-  "elevenlabs_voice": "nombre de voz ElevenLabs recomendada (Rachel / Antoni / Bella / Josh / Arnold)",
-  "personality": "descripción de cómo habla: formal/informal, empático, eficiente",
-  "system_prompt": "prompt COMPLETO de sistema para el agente de voz (mínimo 300 palabras): incluye cómo manejar silencios, interrupciones, confirmaciones, transferencias",
-  "greeting_script": "script exacto al contestar la llamada",
+  "voice_description": "descripción breve de la voz: género, tono, acento",
+  "elevenlabs_voice": "Rachel",
+  "personality": "máximo 100 palabras: cómo habla, tono, estilo",
+  "system_prompt": "máximo 200 palabras: rol, servicios clave, cómo manejar silencios e interrupciones, cuándo transferir",
+  "greeting_script": "script breve al contestar (1-2 frases)",
   "call_flows": {
-    "main": "script del menú principal hablado",
-    "appointment": "script para reservar cita paso a paso",
-    "info": "script para dar información de servicios",
-    "transfer": "script para transferir a persona humana"
+    "main": "menú principal hablado (2-3 frases)",
+    "appointment": "pasos para reservar cita (3 pasos breves)",
+    "info": "cómo dar información de servicios (2-3 frases)",
+    "transfer": "script para transferir a humano (1-2 frases)"
   },
   "vapi_config": {
     "model": "claude-sonnet-4-6",
     "voice_provider": "elevenlabs",
-    "first_message": "primer mensaje al contestar (corto, máx 2 frases)",
+    "first_message": "primer mensaje al contestar (máx 2 frases)",
     "end_call_phrases": ["hasta luego", "gracias por llamar", "que tenga un buen día"],
     "max_duration_seconds": 600,
     "background_sound": "office"
