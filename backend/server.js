@@ -313,6 +313,150 @@ app.use('/dashboard/api', require('./dashboard/routes'));
 // Demo pages served separately so they're accessible at /dashboard/demos/:clientId.html
 // (already covered by the static middleware above since demos/ is inside dashboard-frontend/)
 
+// ============================================
+// CHATBOT - Captura de leads con notificación WhatsApp
+// ============================================
+
+app.post('/api/chat/lead', async (req, res) => {
+    try {
+        const { 
+            email, 
+            phone, 
+            businessName, 
+            businessType, 
+            needs, 
+            selectedSolutions,
+            firstMessage,
+            messages 
+        } = req.body;
+
+        // Validar datos básicos
+        if (!email || !phone || !businessName) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Faltan datos requeridos' 
+            });
+        }
+
+        // Calcular precio orientativo
+        const pricing = {
+            'chatbot_web': { min: 800, max: 1500 },
+            'whatsapp': { min: 1500, max: 2500 },
+            'voz': { min: 2000, max: 3500 },
+            'landing': { min: 1200, max: 2000 }
+        };
+
+        let minPrice = 0;
+        let maxPrice = 0;
+        
+        if (selectedSolutions && selectedSolutions.length > 0) {
+            selectedSolutions.forEach(sol => {
+                if (pricing[sol]) {
+                    minPrice += pricing[sol].min;
+                    maxPrice += pricing[sol].max;
+                }
+            });
+            
+            // Descuento combo (15% si hay más de 1)
+            if (selectedSolutions.length > 1) {
+                minPrice = Math.round(minPrice * 0.85);
+                maxPrice = Math.round(maxPrice * 0.85);
+            }
+        }
+
+        const priceText = minPrice > 0 
+            ? `${minPrice.toLocaleString()}€ - ${maxPrice.toLocaleString()}€`
+            : 'Por definir';
+
+        // Formatear soluciones
+        const solutionNames = {
+            'chatbot_web': 'Chatbot Web',
+            'whatsapp': 'Agente WhatsApp',
+            'voz': 'Agente de Voz',
+            'landing': 'Landing Page'
+        };
+
+        const solutionsText = selectedSolutions && selectedSolutions.length > 0
+            ? selectedSolutions.map(s => `- ${solutionNames[s] || s}`).join('\n')
+            : 'No especificadas';
+
+        // Hora actual
+        const now = new Date();
+        const hora = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+        // Enviar WhatsApp con Twilio
+        const accountSid = process.env.TWILIO_ACCOUNT_SID;
+        const authToken = process.env.TWILIO_AUTH_TOKEN;
+        const whatsappFrom = process.env.TWILIO_WHATSAPP_NUMBER;
+        const whatsappTo = process.env.TU_NUMERO_WHATSAPP;
+
+        if (!accountSid || !authToken || !whatsappFrom || !whatsappTo) {
+            console.error('❌ Credenciales de Twilio no configuradas');
+            return res.status(500).json({ 
+                success: false, 
+                error: 'Credenciales de Twilio no configuradas' 
+            });
+        }
+
+        const twilio = require('twilio');
+        const client = twilio(accountSid, authToken);
+
+        const messageBody = `🔔 NUEVO LEAD CHATBOT - CRIAL
+
+👤 ${businessName}
+🏢 Tipo: ${businessType}
+📧 ${email}
+📱 ${phone}
+
+💬 Necesita:
+${needs}
+
+✅ Soluciones elegidas:
+${solutionsText}
+
+💰 Precio orientativo: ${priceText}
+
+🕐 Hora: ${hora}
+
+---
+Ver dashboard: https://agencia-ia-production.up.railway.app/admin`;
+
+        const message = await client.messages.create({
+            from: `whatsapp:${whatsappFrom}`,
+            to: `whatsapp:${whatsappTo}`,
+            body: messageBody
+        });
+
+        console.log(`✅ WhatsApp enviado: ${message.sid}`);
+        console.log(`📧 Lead: ${email} - ${businessName}`);
+
+        // Guardar en base de datos (opcional)
+        // await db.saveLead({ email, phone, businessName, ... });
+
+        res.json({ 
+            success: true, 
+            message_sid: message.sid,
+            lead_email: email 
+        });
+
+    } catch (error) {
+        console.error('❌ Error capturando lead:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: error.message 
+        });
+    }
+});
+
+// Health check para el endpoint de chat
+app.get('/api/chat/health', (req, res) => {
+    res.json({ 
+        status: 'healthy', 
+        service: 'chat',
+        twilio_configured: !!(process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN)
+    });
+});
+
 const PORT = process.env.PORT || 3000;
 db.init()
     .then(() => {
