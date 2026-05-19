@@ -1,51 +1,16 @@
-# 🤖 AI Solution Generator
+# React + Vite
 
-**Sistema completo para generar agentes de IA personalizados automáticamente**
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Deja de vender cursos. Empieza a vender **soluciones reales**.
+Currently, two official plugins are available:
 
----
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## 🎯 ¿Qué hace esto?
+## React Compiler
 
-Este es un **meta-generador** que crea soluciones completas de agentes IA basándose en las necesidades del cliente. NO es un curso, NO es una plantilla - es un sistema que **GENERA código funcional** automáticamente.
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-### El flujo:
-```
-Cliente completa formulario → IA analiza necesidades → Genera arquitectura técnica
-      ↓
-Crea código base funcional → Cliente obtiene solución lista para deploy
-```
+## Expanding the ESLint configuration
 
-## 💰 Modelo de Negocio REAL
-
-**Lo que vendes:**
-- Agente WhatsApp: €800-2,500 setup
-- Agente de Voz: €2,000-8,000 setup  
-- Suite completa: €5,000-15,000 setup
-
-**Lo que cuesta:**
-- €150-250/mes operación
-- Tu margen: €500-2,000+/mes por cliente
-
-**No es un curso de €2,000. Es una fábrica de soluciones.**
-
-## 🚀 Inicio Rápido
-
-```bash
-# 1. Backend
-cd backend && npm install && npm start
-
-# 2. Frontend (otra terminal)
-cd frontend && open intake-form.html
-
-# 3. Generar agente directamente
-cd backend/generators
-node whatsappAgentGenerator.js
-```
-
-Ver documentación completa dentro del código.
-
----
-
-🚀 Let's ship it.
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
