@@ -369,7 +369,6 @@ export default function ChatWidget() {
             
             addBotMessage(
               `✅ Datos guardados correctamente.\n\n` +
-              `Te envío la propuesta a ${userData.email}\n\n` +
               `Cristian te contactará pronto. ¡Gracias! 🚀`
             )
             setStep(8)
