@@ -8,6 +8,7 @@ import {
   Star, CheckCircle, X, Send,
   Phone, Mail, Building2, Zap
 } from 'lucide-react'
+import { Analytics } from '@vercel/analytics/react'
 
 /* ─── KINETIC GRID (hero background) ──────────────────────────── */
 function KineticGrid({ mousePos }) {
@@ -653,6 +654,7 @@ export default function App() {
       <Contact />
       <Footer />
       <ChatWidget />
+      <Analytics />
       <style>{`
         @keyframes slide-up {
           from { transform: translateY(100%); opacity: 0; }
