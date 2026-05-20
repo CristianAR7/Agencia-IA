@@ -418,7 +418,7 @@ export default function ChatWidget() {
       {/* Header */}
       <div className="bg-black text-white p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white border-2 border-white" />
+          <img src="/logo-firma.png" alt="CRIAL" className="w-10 h-10 object-contain" />
           <div>
             <div className="font-black tracking-tight">CRIAL · Cristian</div>
             <div className="text-xs font-mono opacity-70">Responde en ~4h</div>
