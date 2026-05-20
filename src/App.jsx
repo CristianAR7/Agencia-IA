@@ -1,5 +1,8 @@
 import { useState, useRef } from 'react'
 import ChatWidget from './components/ChatWidget'
+import Cookies from './pages/Cookies';
+import Privacidad from './pages/Privacidad';
+import AvisoLegal from './pages/AvisoLegal';
 import axios from 'axios'
 import {
   Workflow, Monitor, Database,
@@ -608,41 +611,68 @@ function Contact() {
 /* ─── FOOTER ───────────────────────────────────────────────────── */
 function Footer() {
   return (
-    <footer className="bg-white border-t-2 border-black px-6 md:px-12 py-14 flex flex-col md:flex-row justify-between gap-12 items-end">
-      <div className="max-w-md">
-        <p className="text-4xl font-black text-black mb-4">CRIAL.</p>
-        <p className="font-mono text-[9px] tracking-widest uppercase text-gray-600">
-          Crial Solutions / Automatización con IA para negocios locales / Madrid
-        </p>
-        <div className="flex items-center gap-3 mt-4">
-          <span className="w-1.5 h-1.5 bg-green-500 block animate-pulse" />
-          <span className="font-mono text-[9px] tracking-widest uppercase text-green-600">SISTEMAS OPERATIVOS</span>
+    <footer className="bg-white border-t-2 border-black px-6 md:px-12 py-14">
+      {/* Contenedor flex original */}
+      <div className="flex flex-col md:flex-row justify-between gap-12 items-end">
+        <div className="max-w-md">
+          <p className="text-4xl font-black text-black mb-4">CRIAL.</p>
+          <p className="font-mono text-[9px] tracking-widest uppercase text-gray-600">
+            Crial Solutions / Automatización con IA para negocios locales / Madrid
+          </p>
+          <div className="flex items-center gap-3 mt-4">
+            <span className="w-1.5 h-1.5 bg-green-500 block animate-pulse" />
+            <span className="font-mono text-[9px] tracking-widest uppercase text-green-600">SISTEMAS OPERATIVOS</span>
+          </div>
+          <div className="flex items-center gap-3 mt-2">
+            <span className="w-1.5 h-1.5 bg-blue-600 block animate-pulse" />
+            <span className="font-mono text-[9px] tracking-widest uppercase text-blue-600">3 PLAZAS DISPONIBLES</span>
+          </div>
         </div>
-        <div className="flex items-center gap-3 mt-2">
-          <span className="w-1.5 h-1.5 bg-blue-600 block animate-pulse" />
-          <span className="font-mono text-[9px] tracking-widest uppercase text-blue-600">3 PLAZAS DISPONIBLES</span>
+
+        <div className="flex flex-col gap-4">
+          <div className="flex gap-8">
+            {['#cases', '#demos', '#features', '#pricing', '#contact'].map((href, i) => (
+              <a key={href} href={href}
+                className="font-mono text-[9px] tracking-widest uppercase text-gray-600 hover:text-black transition-colors">
+                {['CASOS', 'DEMOS', 'FEATURES', 'PRICING', 'CONTACTO'][i]}
+              </a>
+            ))}
+          </div>
+          <p className="text-right font-mono text-[9px] text-gray-500">
+            DESIGNED_BY_INTELLIGENCE<br />
+            MADE_FOR_GROWTH
+          </p>
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <div className="flex gap-8">
-          {['#cases', '#demos', '#features', '#pricing', '#contact'].map((href, i) => (
-            <a key={href} href={href}
-              className="font-mono text-[9px] tracking-widest uppercase text-gray-600 hover:text-black transition-colors">
-              {['CASOS', 'DEMOS', 'FEATURES', 'PRICING', 'CONTACTO'][i]}
-            </a>
-          ))}
+      {/* Links legales FUERA del flex */}
+      <div className="border-t-2 border-black pt-8 mt-8 text-center">
+        <div className="flex gap-6 justify-center">
+          <a href="/aviso-legal" className="font-mono text-[9px] tracking-widest uppercase text-gray-600 hover:text-black transition-colors">
+            AVISO LEGAL
+          </a>
+          <a href="/privacidad" className="font-mono text-[9px] tracking-widest uppercase text-gray-600 hover:text-black transition-colors">
+            PRIVACIDAD
+          </a>
+          <a href="/cookies" className="font-mono text-[9px] tracking-widest uppercase text-gray-600 hover:text-black transition-colors">
+            COOKIES
+          </a>
         </div>
-        <p className="text-right font-mono text-[9px] text-gray-500">
-          DESIGNED_BY_INTELLIGENCE<br />
-          MADE_FOR_GROWTH
-        </p>
       </div>
     </footer>
   )
 }
 /* ─── APP ──────────────────────────────────────────────────────── */
 export default function App() {
+  // Detectar si estamos en página legal
+  const path = window.location.pathname;
+  
+  // Si es página legal, solo mostrar esa página
+  if (path === '/cookies') return <Cookies />;
+  if (path === '/privacidad') return <Privacidad />;
+  if (path === '/aviso-legal') return <AvisoLegal />;
+  
+  // Si no, mostrar la home normal
   return (
     <div className="min-h-screen bg-white selection:bg-blue-600 selection:text-white">
       <Nav />
