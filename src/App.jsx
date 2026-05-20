@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react'
 import ChatWidget from './components/ChatWidget'
-import Cookies from './pages/Cookies';
-import Privacidad from './pages/Privacidad';
-import AvisoLegal from './pages/AvisoLegal';
+import Cookies from './pages/cookies';
+import Privacidad from './pages/privacidad';
+import AvisoLegal from './pages/aviso-legal';
 import axios from 'axios'
 import {
   Workflow, Monitor, Database,
