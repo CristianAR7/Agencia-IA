@@ -37,7 +37,8 @@ export default function AvisoLegal() {
               <p className="font-bold">Domicilio: La Llagosta, Barcelona</p>
               <p className="font-bold">Email: contacto@crial.solutions</p>
             </div>
-            <section>
+           <section>
+           <section>
             <h2 className="text-3xl font-black mb-4">2. OBJETO</h2>
             <p className="text-lg leading-relaxed">
               El presente aviso legal regula el uso de www.crial.solutions. La navegación implica 
