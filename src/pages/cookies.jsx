@@ -7,7 +7,7 @@ export default function Cookies() {
       <header className="border-b-4 border-black p-6">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/logo-firma.png" alt="CRIAL" className="w-10 h-10 object-contain" />
+            <img src="/logo-firma.png?v=2" alt="CRIAL" className="w-10 h-10 object-contain" />
             <span className="text-2xl font-black">CRIAL SOLUTIONS</span>
           </div>
           <a 
