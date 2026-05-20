@@ -36,9 +36,9 @@ export default function Privacidad() {
           <section>
             <h2 className="text-3xl font-black mb-4">1. RESPONSABLE DEL TRATAMIENTO</h2>
             <div className="border-4 border-black p-6 bg-yellow-50">
-              <p className="font-bold mb-2">Identidad: [TU NOMBRE / EMPRESA]</p>
-              <p className="font-bold mb-2">NIF/CIF: [TU NIF/CIF]</p>
-              <p className="font-bold mb-2">Dirección: [TU DIRECCIÓN]</p>
+              <p className="font-bold mb-2">Identidad: Cristian Alcaina Ramírez/p>
+              <p className="font-bold mb-2">NIF/CIF: 39902409P/p>
+              <p className="font-bold mb-2">Dirección: La Llagosta, Barcelona</p>
               <p className="font-bold">Email: contacto@crial.solutions</p>
             </div>
           </section>
