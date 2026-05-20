@@ -68,7 +68,7 @@ function Nav() {
   return (
     <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-12 py-5 bg-white/95 backdrop-blur-sm border-b-2 border-black">
       <a href="#" className="flex items-center gap-3">
-        <img src="/logo-firma.png" alt="CRIAL" className="w-8 h-8 object-contain" />
+        <img src="/logo-firma.png" alt="CRIAL" className="w-8 h-8 object-contain mix-blend-multiply" />
         <span className="text-2xl font-black tracking-tighter text-black">CRIAL.</span>
       </a>
       <div className="hidden md:flex items-center gap-10">
