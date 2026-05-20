@@ -32,18 +32,12 @@ export default function AvisoLegal() {
               En cumplimiento de la Ley 34/2002 (LSSI-CE), se informa de los datos del titular de www.crial.solutions:
             </p>
             <div className="border-4 border-black p-6 bg-yellow-50 space-y-2">
-              <p className="font-bold">Titular: [TU NOMBRE COMPLETO / NOMBRE EMPRESA]</p>
-              <p className="font-bold">NIF/CIF: [TU NIF/CIF]</p>
-              <p className="font-bold">Domicilio: [TU DIRECCIÓN COMPLETA]</p>
-              <p className="font-bold">Email: hola@crial.solutions</p>
+              <p className="font-bold">Titular: Cristian Alcaina Ramírez</p>
+              <p className="font-bold">NIF/CIF: 39902409P</p>
+              <p className="font-bold">Domicilio: La Llagosta, Barcelona</p>
+              <p className="font-bold">Email: contacto@crial.solutions</p>
             </div>
-            <div className="mt-4 border-4 border-black bg-red-50 p-4">
-              <p className="font-black">⚠️ IMPORTANTE:</p>
-              <p>Reemplaza los campos entre corchetes con tu información real.</p>
-            </div>
-          </section>
-
-          <section>
+            <section>
             <h2 className="text-3xl font-black mb-4">2. OBJETO</h2>
             <p className="text-lg leading-relaxed">
               El presente aviso legal regula el uso de www.crial.solutions. La navegación implica 
@@ -122,14 +116,14 @@ export default function AvisoLegal() {
             <h2 className="text-3xl font-black mb-4">7. LEGISLACIÓN Y JURISDICCIÓN</h2>
             <div className="border-4 border-black p-6">
               <p className="font-bold mb-2">Legislación: Española</p>
-              <p className="font-bold">Jurisdicción: [TU CIUDAD]</p>
+              <p className="font-bold">Jurisdicción: La Llagosta</p>
             </div>
           </section>
 
           <section>
             <h2 className="text-3xl font-black mb-4">8. CONTACTO</h2>
             <div className="border-4 border-black p-6 space-y-2">
-              <p className="font-bold">✉️ hola@crial.solutions</p>
+              <p className="font-bold">✉️ contacto@crial.solutions</p>
               <p className="font-bold">🌐 www.crial.solutions</p>
             </div>
           </section>
