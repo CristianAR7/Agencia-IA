@@ -27,24 +27,25 @@ export default function AvisoLegal() {
 
         <div className="space-y-8">
           <section>
-            <h2 className="text-3xl font-black mb-4">1. DATOS IDENTIFICATIVOS</h2>
-            <p className="mb-4 text-lg">
-              En cumplimiento de la Ley 34/2002 (LSSI-CE), se informa de los datos del titular de www.crial.solutions:
-            </p>
-            <div className="border-4 border-black p-6 bg-yellow-50 space-y-2">
-              <p className="font-bold">Titular: Cristian Alcaina Ramírez</p>
-              <p className="font-bold">NIF/CIF: 39902409P</p>
-              <p className="font-bold">Domicilio: La Llagosta, Barcelona</p>
-              <p className="font-bold">Email: contacto@crial.solutions</p>
-            </div>
-           <section>
-           <section>
-            <h2 className="text-3xl font-black mb-4">2. OBJETO</h2>
-            <p className="text-lg leading-relaxed">
-              El presente aviso legal regula el uso de www.crial.solutions. La navegación implica 
-              la aceptación de todas las disposiciones aquí incluidas.
-            </p>
-          </section>
+  <h2 className="text-3xl font-black mb-4">1. DATOS IDENTIFICATIVOS</h2>
+  <p className="mb-4 text-lg">
+    En cumplimiento de la Ley 34/2002 (LSSI-CE), se informa de los datos del titular de www.crial.solutions:
+  </p>
+  <div className="border-4 border-black p-6 bg-yellow-50 space-y-2">
+    <p className="font-bold">Titular: Cristian Alcaina Ramírez</p>
+    <p className="font-bold">NIF/CIF: 39902409P</p>
+    <p className="font-bold">Domicilio: La Llagosta, Barcelona</p>
+    <p className="font-bold">Email: contacto@crial.solutions</p>
+  </div>
+</section>
+
+<section>
+  <h2 className="text-3xl font-black mb-4">2. OBJETO</h2>
+  <p className="text-lg leading-relaxed">
+    El presente aviso legal regula el uso de www.crial.solutions. La navegación implica 
+    la aceptación de todas las disposiciones aquí incluidas.
+  </p>
+</section>
 
           <section>
             <h2 className="text-3xl font-black mb-4">3. SERVICIOS</h2>
