@@ -222,7 +222,7 @@ function CaseStudy() {
         <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none mb-4">
           Arroz con<br />Miso.
         </h2>
-        <p className="text-gray-600 text-lg mb-16">Restaurante de cocina japonesa en Madrid — resultados en 30 días</p>
+        <p className="text-gray-600 text-lg mb-16">Organizadores de Viajes a Japón— resultados en 30 días</p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           {metrics.map((m, i) => (
@@ -246,7 +246,7 @@ function CaseStudy() {
               {[...Array(5)].map((_, i) => <Star key={i} size={16} className="text-blue-600 fill-blue-600" />)}
             </div>
             <blockquote className="text-black text-lg leading-relaxed mb-6 italic">
-              "Desde que implementamos el chatbot de Crial, recibimos reservas a las 3 de la mañana sin que nadie tenga que estar pendiente. La automatización de WhatsApp nos ha salvado literalmente. El ROI fue claro desde el primer mes."
+              "Desde que creamos la Web y el Chatbot hemos augmentado las reservas de las llamadas con clientes un 200% y con las automatizaciones de pagos y ventas que antes tenía que hacer manual nos ha salvado. El ROI fue claro desde el primer mes."
             </blockquote>
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
