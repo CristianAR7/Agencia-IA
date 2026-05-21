@@ -617,7 +617,7 @@ function Footer() {
         <div className="max-w-md">
           <p className="text-4xl font-black text-black mb-4">CRIAL.</p>
           <p className="font-mono text-[9px] tracking-widest uppercase text-gray-600">
-            Crial Solutions / Automatización con IA para negocios locales / Madrid
+            Crial Solutions / Automatización con IA para negocios locales / Barcelona
           </p>
           <div className="flex items-center gap-3 mt-4">
             <span className="w-1.5 h-1.5 bg-green-500 block animate-pulse" />
