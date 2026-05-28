@@ -246,7 +246,7 @@ function CaseStudy() {
               {[...Array(5)].map((_, i) => <Star key={i} size={16} className="text-blue-600 fill-blue-600" />)}
             </div>
             <blockquote className="text-black text-lg leading-relaxed mb-6 italic">
-              "Desde que creamos la Web y el Chatbot hemos augmentado las reservas de las llamadas con clientes un 200% y con las automatizaciones de pagos y ventas que antes tenía que hacer manual nos ha salvado. El ROI fue claro desde el primer mes."
+              "Desde que creamos la Web y el Chatbot hemos aumentado las reservas de las llamadas con clientes un 200% y con las automatizaciones de pagos y ventas que antes tenía que hacer manual nos ha salvado. El ROI fue claro desde el primer mes."
             </blockquote>
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
