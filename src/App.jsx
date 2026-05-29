@@ -600,9 +600,20 @@ function Contact() {
           <p className="font-mono text-[9px] tracking-widest uppercase text-gray-500 text-center">
             SIN COMPROMISO · RESPUESTA EN 24H · PROPUESTA PERSONALIZADA
           </p>
+          <div className="flex items-center gap-4 mt-2">
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="font-mono text-[9px] tracking-widest uppercase text-gray-400">O</span>
+            <div className="flex-1 h-px bg-gray-200" />
+        </div>
+        <a
+          href="mailto:contacto@crial.solutions"
+          className="flex items-center justify-center gap-3 border-2 border-black text-black px-10 py-5 font-bold text-sm uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+        >
+          <Mail size={14} />
+           ESCRÍBENOS AL EMAIL
+        </a>
         </form>
       </div>
-
       {success && <SuccessModal onClose={() => setSuccess(false)} />}
     </section>
   )
@@ -630,6 +641,13 @@ function Footer() {
         </div>
 
         <div className="flex flex-col gap-4">
+          <a
+            href="mailto:contacto@crial.solutions"
+            className="font-mono text-[9px] tracking-widest uppercase text-gray-600 hover:text-black transition-colors flex items-center gap-2 self-end"
+          >
+            <Mail size={9} />
+              contacto@crial.solutions
+            </a>
           <div className="flex gap-8">
             {['#cases', '#demos', '#features', '#pricing', '#contact'].map((href, i) => (
               <a key={href} href={href}
