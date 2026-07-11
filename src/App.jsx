@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { flushSync } from 'react-dom'
 import ChatWidget from './components/ChatWidget'
 import Cookies from './pages/cookies';
 import Privacidad from './pages/privacidad';
@@ -9,7 +10,7 @@ import {
   ArrowUpRight, ExternalLink,
   TrendingUp, Clock, DollarSign,
   Star, CheckCircle, X, Send,
-  Phone, Mail, Building2, Zap
+  Phone, Mail, Building2, Zap, Sun, Moon, Scissors, UtensilsCrossed, Stethoscope, Dumbbell, Home
 } from 'lucide-react'
 import { Analytics } from '@vercel/analytics/react'
 
@@ -25,7 +26,7 @@ function KineticGrid({ mousePos }) {
         }}
       >
         {Array.from({ length: 72 }).map((_, i) => (
-          <div key={i} className="border border-black/10 bg-black/[0.01]" />
+          <div key={i} className="border border-black/10 dark:border-white/10 bg-black/[0.01] dark:bg-white/[0.01]" />
         ))}
       </div>
     </div>
@@ -37,7 +38,7 @@ function SuccessModal({ onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onClose}>
       <div
-        className="relative bg-white border-2 border-black p-12 max-w-md w-full mx-4"
+        className="relative bg-white dark:bg-zinc-950 border-2 border-black dark:border-white p-12 max-w-md w-full mx-4"
         onClick={e => e.stopPropagation()}
       >
         <button onClick={onClose} className="absolute top-4 right-4 hover:text-blue-600 transition-colors">
@@ -47,7 +48,7 @@ function SuccessModal({ onClose }) {
         <h3 className="text-4xl font-black uppercase tracking-tighter leading-none mb-6">
           Analizando<br />tu negocio.
         </h3>
-        <p className="text-gray-600 mb-8 leading-relaxed">
+        <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
           Nuestro equipo revisará tu caso en las próximas <strong>24 horas</strong> y te contactará con una propuesta personalizada.
         </p>
         <div className="border-l-4 border-blue-600 pl-6">
@@ -56,6 +57,40 @@ function SuccessModal({ onClose }) {
         </div>
       </div>
     </div>
+  )
+}
+
+/* ─── THEME TOGGLE ─────────────────────────────────────────────── */
+function ThemeToggle() {
+  const [dark, setDark] = useState(() => localStorage.getItem('crial-theme') === 'dark')
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', dark)
+    localStorage.setItem('crial-theme', dark ? 'dark' : 'light')
+  }, [dark])
+
+  const toggle = () => {
+    const next = !dark
+    const apply = () => {
+      flushSync(() => setDark(next))
+      document.documentElement.classList.toggle('dark', next)
+    }
+    if (!document.startViewTransition) { apply(); return }
+    document.documentElement.classList.add('vt-active')
+    const vt = document.startViewTransition(apply)
+    vt.finished.finally(() => document.documentElement.classList.remove('vt-active'))
+  }
+
+  return (
+    <button
+      onClick={toggle}
+      aria-label="Cambiar tema"
+      title={dark ? 'Modo claro' : 'Modo oscuro'}
+      className="relative w-14 h-7 border-2 border-black dark:border-white flex items-center px-0.5 transition-colors"
+    >
+      <span className={`w-5 h-5 bg-black dark:bg-white flex items-center justify-center transition-transform duration-300 ${dark ? 'translate-x-[26px]' : 'translate-x-0'}`}>
+        {dark ? <Moon size={12} className="text-black" /> : <Sun size={12} className="text-white" />}
+      </span>
+    </button>
   )
 }
 
@@ -69,28 +104,32 @@ function Nav() {
     { label: 'CONTACTO', href: '#contact' },
   ]
   return (
-    <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-12 py-5 bg-white/95 backdrop-blur-sm border-b-2 border-black">
+    <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-12 py-5 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-sm border-b-2 border-black dark:border-white">
       <a href="#" className="flex items-center gap-3">
         <img src="/logo-firma.png?v=2" alt="CRIAL" className="w-8 h-8 object-contain" />
-        <span className="text-2xl font-black tracking-tighter text-black">CRIAL.</span>
+        <span className="text-2xl font-black tracking-tighter text-black dark:text-white">CRIAL.</span>
       </a>
       <div className="hidden md:flex items-center gap-10">
         {links.map(l => (
           <a key={l.href} href={l.href}
-            className="font-mono text-[10px] tracking-[0.25em] text-black border-b border-black/40 hover:border-black pb-0.5 transition-colors">
+            className="font-mono text-[10px] tracking-[0.25em] text-black dark:text-white border-b border-black/40 dark:border-white/40 hover:border-black dark:hover:border-white pb-0.5 transition-colors">
             {l.label}
           </a>
         ))}
+        <ThemeToggle />
       </div>
-      <button className="md:hidden text-black font-mono text-[10px] tracking-widest"
-        onClick={() => setOpen(!open)}>
-        {open ? 'CLOSE' : 'MENU'}
-      </button>
+      <div className="md:hidden flex items-center gap-4">
+        <ThemeToggle />
+        <button className="text-black dark:text-white font-mono text-[10px] tracking-widest"
+          onClick={() => setOpen(!open)}>
+          {open ? 'CLOSE' : 'MENU'}
+        </button>
+      </div>
       {open && (
-        <div className="absolute top-full left-0 right-0 bg-white border-t-2 border-black flex flex-col px-6 py-6 gap-5">
+        <div className="absolute top-full left-0 right-0 bg-white dark:bg-zinc-950 border-t-2 border-black dark:border-white flex flex-col px-6 py-6 gap-5">
           {links.map(l => (
             <a key={l.href} href={l.href} onClick={() => setOpen(false)}
-              className="font-mono text-xs tracking-widest text-black hover:text-blue-600 transition-colors">
+              className="font-mono text-xs tracking-widest text-black dark:text-white hover:text-blue-600 transition-colors">
               {l.label}
             </a>
           ))}
@@ -118,7 +157,7 @@ function Hero() {
     <section
       ref={ref}
       onMouseMove={handleMouseMove}
-      className="relative min-h-screen bg-white overflow-hidden flex flex-col justify-center px-6 md:px-12"
+      className="relative min-h-screen bg-white dark:bg-zinc-950 overflow-hidden flex flex-col justify-center px-6 md:px-12"
     >
       <KineticGrid mousePos={mousePos} />
 
@@ -129,11 +168,10 @@ function Hero() {
         </p>
 
         {/* Headline masivo */}
-        <h1 className="text-[14vw] md:text-[10vw] font-black leading-[0.85] tracking-tighter text-black uppercase italic">
+        <h1 className="text-[14vw] md:text-[10vw] font-black leading-[0.85] tracking-tighter text-black dark:text-white uppercase italic">
           Captura<br />
           <span
-            className="text-transparent inline-block"
-            style={{ WebkitTextStroke: '2px black' }}
+            className="text-transparent inline-block hero-stroke"
           >
             Clientes
           </span>
@@ -145,29 +183,29 @@ function Hero() {
         <div className="mt-12 flex flex-col md:flex-row items-start md:items-end gap-10">
           <div className="max-w-md space-y-6">
             {/* Urgency badge */}
-            <div className="inline-flex items-center gap-3 border-2 border-black px-4 py-2">
+            <div className="inline-flex items-center gap-3 border-2 border-black dark:border-white px-4 py-2">
               <span className="w-2 h-2 bg-blue-600 block" />
-              <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-black">
+              <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-black dark:text-white">
                 SOLO 3 PLAZAS ESTE MES
               </span>
             </div>
 
-            <p className="text-gray-700 text-xl font-light leading-snug">
+            <p className="text-gray-700 dark:text-gray-300 text-xl font-light leading-snug">
               Chatbots web, WhatsApp 24/7 y landing pages que convierten. Sin adornos. Solo sistemas que funcionan.
             </p>
 
             {/* Arroz con Miso inline */}
-            <div className="border-2 border-black p-5 flex flex-wrap gap-6">
+            <div className="border-2 border-black dark:border-white p-5 flex flex-wrap gap-6">
               <div>
-                <span className="block text-3xl font-black text-black">+200%</span>
+                <span className="block text-3xl font-black text-black dark:text-white">+200%</span>
                 <span className="font-mono text-[9px] tracking-widest uppercase text-gray-500">Conversión</span>
               </div>
               <div>
-                <span className="block text-3xl font-black text-black">1.200€</span>
+                <span className="block text-3xl font-black text-black dark:text-white">1.200€</span>
                 <span className="font-mono text-[9px] tracking-widest uppercase text-gray-500">Invertidos</span>
               </div>
               <div>
-                <span className="block text-3xl font-black text-black">10h</span>
+                <span className="block text-3xl font-black text-black dark:text-white">10h</span>
                 <span className="font-mono text-[9px] tracking-widest uppercase text-gray-500">Ahorradas/sem</span>
               </div>
               <div className="self-end">
@@ -179,13 +217,13 @@ function Hero() {
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 md:ml-auto">
             <a href="#demos"
-              className="group relative bg-black text-white px-8 py-5 font-bold text-sm uppercase tracking-widest overflow-hidden hover:bg-blue-600 transition-colors">
+              className="group relative bg-black text-white dark:bg-white dark:text-black px-8 py-5 font-bold text-sm uppercase tracking-widest overflow-hidden hover:bg-blue-600 dark:hover:bg-blue-600 transition-colors">
               <span className="relative z-10 flex items-center gap-3">
                 VER DEMOS <ArrowUpRight size={16} className="group-hover:rotate-45 transition-transform" />
               </span>
             </a>
             <a href="#cases"
-              className="border-2 border-black hover:bg-black hover:text-white text-black px-8 py-5 font-bold text-sm uppercase tracking-widest transition-colors">
+              className="border-2 border-black dark:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black text-black dark:text-white px-8 py-5 font-bold text-sm uppercase tracking-widest transition-colors">
               EXPLORAR CASOS
             </a>
           </div>
@@ -196,11 +234,11 @@ function Hero() {
       <div className="absolute bottom-8 left-6 md:left-12 right-6 md:right-12 flex flex-wrap items-center gap-8 text-xs">
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 bg-green-500 block animate-pulse" />
-          <span className="font-mono text-[9px] tracking-widest uppercase text-gray-600">SISTEMAS OPERATIVOS</span>
+          <span className="font-mono text-[9px] tracking-widest uppercase text-gray-600 dark:text-gray-400">SISTEMAS OPERATIVOS</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 bg-blue-600 block animate-pulse" />
-          <span className="font-mono text-[9px] tracking-widest uppercase text-gray-600">3 PLAZAS DISPONIBLES</span>
+          <span className="font-mono text-[9px] tracking-widest uppercase text-gray-600 dark:text-gray-400">3 PLAZAS DISPONIBLES</span>
         </div>
       </div>
     </section>
@@ -216,28 +254,28 @@ function CaseStudy() {
   ]
 
   return (
-    <section id="cases" className="bg-gray-50 py-32 px-6 md:px-12">
+    <section id="cases" className="bg-gray-50 dark:bg-zinc-900 py-32 px-6 md:px-12">
       <div className="max-w-6xl mx-auto">
         <p className="font-mono text-[10px] tracking-[0.3em] uppercase text-blue-600 mb-6">[ CASO DE ÉXITO REAL ]</p>
         <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none mb-4">
           Arroz con<br />Miso.
         </h2>
-        <p className="text-gray-600 text-lg mb-16">Organizadores de Viajes a Japón— resultados en 30 días</p>
+        <p className="text-gray-600 dark:text-gray-400 text-lg mb-16">Organizadores de Viajes a Japón— resultados en 30 días</p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           {metrics.map((m, i) => (
-            <div key={i} className="border-2 border-black p-8 bg-white">
-              <div className="w-12 h-12 bg-black flex items-center justify-center mb-6">
-                <m.icon className="text-white" size={22} />
+            <div key={i} className="border-2 border-black dark:border-white p-8 bg-white dark:bg-zinc-950">
+              <div className="w-12 h-12 bg-black dark:bg-white flex items-center justify-center mb-6">
+                <m.icon className="text-white dark:text-black" size={22} />
               </div>
-              <p className="text-4xl font-black text-black mb-1">{m.value}</p>
+              <p className="text-4xl font-black text-black dark:text-white mb-1">{m.value}</p>
               <p className="text-blue-600 font-semibold mb-2 font-mono text-xs tracking-widest uppercase">{m.label}</p>
-              <p className="text-gray-600 text-sm">{m.desc}</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">{m.desc}</p>
             </div>
           ))}
         </div>
 
-        <div className="border-2 border-black p-8 md:p-12 flex flex-col md:flex-row gap-8 items-start bg-white">
+        <div className="border-2 border-black dark:border-white p-8 md:p-12 flex flex-col md:flex-row gap-8 items-start bg-white dark:bg-zinc-950">
           <div className="flex-shrink-0">
             <div className="w-16 h-16 bg-blue-600 flex items-center justify-center text-white font-bold text-xl">IS</div>
           </div>
@@ -245,16 +283,16 @@ function CaseStudy() {
             <div className="flex mb-4">
               {[...Array(5)].map((_, i) => <Star key={i} size={16} className="text-blue-600 fill-blue-600" />)}
             </div>
-            <blockquote className="text-black text-lg leading-relaxed mb-6 italic">
+            <blockquote className="text-black dark:text-white text-lg leading-relaxed mb-6 italic">
               "Desde que creamos la Web y el Chatbot hemos aumentado las reservas de las llamadas con clientes un 200% y con las automatizaciones de pagos y ventas que antes tenía que hacer manual nos ha salvado. El ROI fue claro desde el primer mes."
             </blockquote>
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
-                <p className="font-bold text-black">Isaac</p>
+                <p className="font-bold text-black dark:text-white">Isaac</p>
                 <p className="font-mono text-[9px] tracking-widest uppercase text-gray-500">Propietario · Arroz con Miso</p>
               </div>
               <a href="https://arrozconmiso.com" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-2 font-mono text-[9px] tracking-widest uppercase text-blue-600 hover:text-blue-700 border-2 border-black hover:bg-black hover:text-white px-4 py-2.5 transition-all">
+                className="flex items-center gap-2 font-mono text-[9px] tracking-widest uppercase text-blue-600 hover:text-blue-700 border-2 border-black dark:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black px-4 py-2.5 transition-all">
               </a>
             </div>
           </div>
@@ -267,35 +305,35 @@ function CaseStudy() {
 /* ─── DEMOS ────────────────────────────────────────────────────── */
 function Demos() {
   const demos = [
-    { name: 'Peluquería',     url: 'https://web-production-3aa085.up.railway.app',                       icon: '✂️',  tag: 'RESERVAS AUTOMÁTICAS', desc: 'Sistema de citas con chatbot IA y recordatorios WhatsApp' },
-    { name: 'Restaurante',    url: 'https://demo-restaurante-crial-production.up.railway.app',           icon: '🍽️',  tag: 'GESTIÓN DE MESAS',      desc: 'Reservas 24/7, carta digital e integración Google Maps' },
-    { name: 'Clínica Dental', url: 'https://demo-clinica-dental-crial-production.up.railway.app',        icon: '🦷', tag: 'AGENDA MÉDICA',         desc: 'Gestión de pacientes, recordatorios y formularios médicos' },
-    { name: 'Gimnasio',       url: 'https://demo-gimnasio-crial-production.up.railway.app',              icon: '💪', tag: 'MEMBRESÍAS IA',         desc: 'Inscripciones, clases y seguimiento de clientes automatizado' },
-    { name: 'Inmobiliaria',   url: 'https://web-production-30c9a.up.railway.app',                        icon: '🏠', tag: 'CAPTACIÓN LEADS',       desc: 'Calificación automática de compradores y visitas guiadas' },
+    { name: 'Peluquería',     url: 'https://web-production-3aa085.up.railway.app',                       icon: Scissors, tag: 'RESERVAS AUTOMÁTICAS', desc: 'Sistema de citas con chatbot IA y recordatorios WhatsApp' },
+    { name: 'Restaurante',    url: 'https://demo-restaurante-crial-production.up.railway.app',           icon: UtensilsCrossed, tag: 'GESTIÓN DE MESAS',      desc: 'Reservas 24/7, carta digital e integración Google Maps' },
+    { name: 'Clínica Dental', url: 'https://demo-clinica-dental-crial-production.up.railway.app',        icon: Stethoscope, tag: 'AGENDA MÉDICA',         desc: 'Gestión de pacientes, recordatorios y formularios médicos' },
+    { name: 'Gimnasio',       url: 'https://demo-gimnasio-crial-production.up.railway.app',              icon: Dumbbell, tag: 'MEMBRESÍAS IA',         desc: 'Inscripciones, clases y seguimiento de clientes automatizado' },
+    { name: 'Inmobiliaria',   url: 'https://web-production-30c9a.up.railway.app',                        icon: Home, tag: 'CAPTACIÓN LEADS',       desc: 'Calificación automática de compradores y visitas guiadas' },
   ]
 
   return (
-    <section id="demos" className="bg-white py-32 px-6 md:px-12">
+    <section id="demos" className="bg-white dark:bg-zinc-950 py-32 px-6 md:px-12">
       <div className="max-w-6xl mx-auto">
         <p className="font-mono text-[10px] tracking-[0.3em] uppercase text-blue-600 mb-6">[ DEMOS EN VIVO ]</p>
         <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none mb-4">
           Tu negocio,<br /><span className="text-blue-600">potenciado</span>
         </h2>
-        <p className="text-gray-600 text-lg max-w-xl mb-16">
-          5 verticales con soluciones listas para desplegar. Haz clic y explora el demo de tu sector.
+        <p className="text-gray-600 dark:text-gray-400 text-lg max-w-xl mb-16">
+          Peluquerías, restaurantes, clínicas, gimnasios e inmobiliarias. Haz clic y prueba la demo de tu sector.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {demos.map((d, i) => (
             <a key={i} href={d.url} target="_blank" rel="noopener noreferrer"
-              className="border-2 border-black p-7 group flex flex-col gap-4 cursor-pointer hover:bg-black hover:text-white transition-all bg-white">
+              className="border-2 border-black dark:border-white p-7 group flex flex-col gap-4 cursor-pointer hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all bg-white dark:bg-zinc-950">
               <div className="flex items-start justify-between">
-                <span className="text-3xl">{d.icon}</span>
-                <span className="font-mono text-[9px] tracking-widest uppercase border border-black/20 group-hover:border-white/40 px-2 py-1 transition-colors">{d.tag}</span>
+                <d.icon size={30} strokeWidth={1.75} className="text-black dark:text-white group-hover:text-white dark:group-hover:text-black transition-colors" />
+                <span className="font-mono text-[9px] tracking-widest uppercase border border-black/20 dark:border-white/20 group-hover:border-white/40 px-2 py-1 transition-colors">{d.tag}</span>
               </div>
               <div>
                 <h3 className="text-xl font-bold mb-1.5">{d.name}</h3>
-                <p className="text-gray-600 group-hover:text-gray-300 text-sm leading-relaxed transition-colors">{d.desc}</p>
+                <p className="text-gray-600 dark:text-gray-400 group-hover:text-gray-300 text-sm leading-relaxed transition-colors">{d.desc}</p>
               </div>
               <div className="flex items-center gap-2 text-blue-600 group-hover:text-white opacity-0 group-hover:opacity-100 transition-opacity mt-auto">
                 <span className="font-mono text-[9px] tracking-widest uppercase">VER DEMO</span><ExternalLink size={12} />
@@ -304,12 +342,12 @@ function Demos() {
           ))}
 
           <div
-            className="border-2 border-dashed border-black/30 hover:border-black p-7 flex flex-col items-center justify-center gap-4 transition-colors group cursor-pointer bg-gray-50 hover:bg-white"
+            className="border-2 border-dashed border-black/30 dark:border-white/30 hover:border-black dark:hover:border-white p-7 flex flex-col items-center justify-center gap-4 transition-colors group cursor-pointer bg-gray-50 dark:bg-zinc-900 hover:bg-white"
             onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
-            <div className="w-12 h-12 border-2 border-black/30 group-hover:border-black flex items-center justify-center transition-colors">
-              <Zap size={20} className="text-black" />
+            <div className="w-12 h-12 border-2 border-black/30 dark:border-white/30 group-hover:border-black dark:hover:border-white flex items-center justify-center transition-colors">
+              <Zap size={20} className="text-black dark:text-white" />
             </div>
-            <p className="text-gray-700 group-hover:text-black transition-colors font-semibold text-center">
+            <p className="text-gray-700 dark:text-gray-300 group-hover:text-black transition-colors font-semibold text-center">
               ¿Tu sector no está aquí?
             </p>
             <p className="font-mono text-[9px] tracking-widest uppercase text-blue-600">HABLEMOS →</p>
@@ -344,7 +382,7 @@ function Features() {
   ]
 
   return (
-    <section id="features" className="bg-gray-50 py-32 px-6 md:px-12">
+    <section id="features" className="bg-gray-50 dark:bg-zinc-900 py-32 px-6 md:px-12">
       <div className="max-w-6xl mx-auto">
         <p className="font-mono text-[10px] tracking-[0.3em] uppercase text-blue-600 mb-6">[ SOLUCIONES ]</p>
         <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none mb-16">
@@ -353,16 +391,16 @@ function Features() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {features.map((f, i) => (
-            <div key={i} className="border-2 border-black p-8 flex flex-col gap-6 bg-white">
-              <div className="w-12 h-12 bg-black flex items-center justify-center">
-                <f.icon size={22} className="text-white" />
+            <div key={i} className="border-2 border-black dark:border-white p-8 flex flex-col gap-6 bg-white dark:bg-zinc-950">
+              <div className="w-12 h-12 bg-black dark:bg-white flex items-center justify-center">
+                <f.icon size={22} className="text-white dark:text-black" />
               </div>
               <div>
                 <h3 className="text-base font-black uppercase tracking-tight mb-3">{f.title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed mb-6">{f.desc}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-6">{f.desc}</p>
                 <ul className="flex flex-col gap-2">
                   {f.points.map((pt, j) => (
-                    <li key={j} className="flex items-center gap-2 text-sm text-black">
+                    <li key={j} className="flex items-center gap-2 text-sm text-black dark:text-white">
                       <CheckCircle size={14} className="text-blue-600 flex-shrink-0" />{pt}
                     </li>
                   ))}
@@ -400,14 +438,14 @@ function Pricing() {
   ]
 
   return (
-    <section id="pricing" className="bg-white py-32 px-6 md:px-12">
+    <section id="pricing" className="bg-white dark:bg-zinc-950 py-32 px-6 md:px-12">
       <div className="max-w-6xl mx-auto">
         <p className="font-mono text-[10px] tracking-[0.3em] uppercase text-blue-600 mb-6">[ INVERSIÓN ]</p>
         <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none mb-4">
           Precios sin<br />sorpresas.
         </h2>
 
-        <div className="inline-flex items-center gap-2 border-2 border-blue-600 bg-blue-50 px-5 py-3 mb-12 mt-8">
+        <div className="inline-flex items-center gap-2 border-2 border-blue-600 bg-blue-50 dark:bg-blue-950 px-5 py-3 mb-12 mt-8">
           <Zap size={14} className="text-blue-600" />
           <span className="font-mono text-[9px] tracking-widest uppercase text-blue-600">SETUP GRATIS ESTE MES (AHORRA 500€)</span>
         </div>
@@ -417,8 +455,8 @@ function Pricing() {
             <div key={i}
               className={`relative flex flex-col p-8 ${
                 p.highlight
-                  ? 'border-4 border-blue-600 bg-blue-50'
-                  : 'border-2 border-black bg-white'
+                  ? 'border-4 border-blue-600 bg-blue-50 dark:bg-blue-950'
+                  : 'border-2 border-black dark:border-white bg-white dark:bg-zinc-950'
               }`}>
               {p.highlight && (
                 <span className="absolute -top-3 left-6 font-mono text-[9px] tracking-widest uppercase bg-blue-600 text-white px-3 py-1">MÁS POPULAR</span>
@@ -426,17 +464,17 @@ function Pricing() {
               <div className="mb-6">
                 <p className="font-mono text-[9px] tracking-widest uppercase mb-4 text-blue-600">{p.name}</p>
                 <div className="flex items-end gap-2 mb-1">
-                  <span className="text-4xl font-black text-black">{p.setup}</span>
+                  <span className="text-4xl font-black text-black dark:text-white">{p.setup}</span>
                   <span className="text-sm mb-1 text-gray-500">setup</span>
                 </div>
-                <p className="text-lg font-semibold text-gray-700">+ {p.monthly}</p>
-                <p className="text-sm mt-3 leading-relaxed text-gray-600">{p.desc}</p>
+                <p className="text-lg font-semibold text-gray-700 dark:text-gray-300">+ {p.monthly}</p>
+                <p className="text-sm mt-3 leading-relaxed text-gray-600 dark:text-gray-400">{p.desc}</p>
               </div>
               <ul className="flex flex-col gap-3 mb-8 flex-1">
                 {p.features.map((ft, j) => (
                   <li key={j} className="flex items-center gap-2 text-sm">
                     <CheckCircle size={14} className="text-blue-600" />
-                    <span className="text-black">{ft}</span>
+                    <span className="text-black dark:text-white">{ft}</span>
                   </li>
                 ))}
               </ul>
@@ -444,7 +482,7 @@ function Pricing() {
                 className={`text-center py-4 font-bold text-sm uppercase tracking-widest transition-all ${
                   p.highlight
                     ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'border-2 border-black text-black hover:bg-black hover:text-white'
+                    : 'border-2 border-black dark:border-white text-black dark:text-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black'
                 }`}>
                 EMPEZAR AHORA
               </a>
@@ -531,17 +569,17 @@ function Contact() {
     }
   }
 
-  const inputClass = "bg-white border-2 border-black focus:border-blue-600 text-black px-4 py-3.5 outline-none placeholder:text-gray-400 transition-colors text-sm w-full"
-  const labelClass = "font-mono text-[9px] tracking-[0.25em] uppercase text-gray-600 flex items-center gap-2 mb-2"
+  const inputClass = "bg-white dark:bg-zinc-950 border-2 border-black dark:border-white focus:border-blue-600 text-black dark:text-white px-4 py-3.5 outline-none placeholder:text-gray-400 transition-colors text-sm w-full"
+  const labelClass = "font-mono text-[9px] tracking-[0.25em] uppercase text-gray-600 dark:text-gray-400 flex items-center gap-2 mb-2"
 
   return (
-    <section id="contact" className="bg-white py-32 px-6 md:px-12 overflow-hidden relative border-t-2 border-black">
+    <section id="contact" className="bg-white dark:bg-zinc-950 py-32 px-6 md:px-12 overflow-hidden relative border-t-2 border-black dark:border-white">
       <div className="relative z-10 max-w-3xl mx-auto">
         <p className="font-mono text-[10px] tracking-[0.3em] uppercase text-blue-600 mb-6">[ CONTACTO ]</p>
-        <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none text-black mb-4">
+        <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none text-black dark:text-white mb-4">
           ¿Construimos<br />tu motor?
         </h2>
-        <p className="text-gray-600 text-lg mb-14">
+        <p className="text-gray-600 dark:text-gray-400 text-lg mb-14">
           Analizamos tu caso gratis y te enviamos una propuesta en 24h.
         </p>
 
@@ -601,13 +639,13 @@ function Contact() {
             SIN COMPROMISO · RESPUESTA EN 24H · PROPUESTA PERSONALIZADA
           </p>
           <div className="flex items-center gap-4 mt-2">
-            <div className="flex-1 h-px bg-gray-200" />
+            <div className="flex-1 h-px bg-gray-200 dark:bg-zinc-700" />
             <span className="font-mono text-[9px] tracking-widest uppercase text-gray-400">O</span>
-            <div className="flex-1 h-px bg-gray-200" />
+            <div className="flex-1 h-px bg-gray-200 dark:bg-zinc-700" />
         </div>
         <a
           href="mailto:contacto@crial.solutions"
-          className="flex items-center justify-center gap-3 border-2 border-black text-black px-10 py-5 font-bold text-sm uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+          className="flex items-center justify-center gap-3 border-2 border-black dark:border-white text-black dark:text-white px-10 py-5 font-bold text-sm uppercase tracking-widest hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
         >
           <Mail size={14} />
            ESCRÍBENOS AL EMAIL
@@ -622,12 +660,12 @@ function Contact() {
 /* ─── FOOTER ───────────────────────────────────────────────────── */
 function Footer() {
   return (
-    <footer className="bg-white border-t-2 border-black px-6 md:px-12 py-14">
+    <footer className="bg-white dark:bg-zinc-950 border-t-2 border-black dark:border-white px-6 md:px-12 py-14">
       {/* Contenedor flex original */}
       <div className="flex flex-col md:flex-row justify-between gap-12 items-end">
         <div className="max-w-md">
-          <p className="text-4xl font-black text-black mb-4">CRIAL.</p>
-          <p className="font-mono text-[9px] tracking-widest uppercase text-gray-600">
+          <p className="text-4xl font-black text-black dark:text-white mb-4">CRIAL.</p>
+          <p className="font-mono text-[9px] tracking-widest uppercase text-gray-600 dark:text-gray-400">
             Crial Solutions / Automatización con IA para negocios locales / Barcelona
           </p>
           <div className="flex items-center gap-3 mt-4">
@@ -643,7 +681,7 @@ function Footer() {
         <div className="flex flex-col gap-4">
           <a
             href="mailto:contacto@crial.solutions"
-            className="font-mono text-[9px] tracking-widest uppercase text-gray-600 hover:text-black transition-colors flex items-center gap-2 self-end"
+            className="font-mono text-[9px] tracking-widest uppercase text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors flex items-center gap-2 self-end"
           >
             <Mail size={9} />
               contacto@crial.solutions
@@ -651,7 +689,7 @@ function Footer() {
           <div className="flex gap-8">
             {['#cases', '#demos', '#features', '#pricing', '#contact'].map((href, i) => (
               <a key={href} href={href}
-                className="font-mono text-[9px] tracking-widest uppercase text-gray-600 hover:text-black transition-colors">
+                className="font-mono text-[9px] tracking-widest uppercase text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">
                 {['CASOS', 'DEMOS', 'FEATURES', 'PRICING', 'CONTACTO'][i]}
               </a>
             ))}
@@ -664,15 +702,15 @@ function Footer() {
       </div>
 
       {/* Links legales FUERA del flex */}
-      <div className="border-t-2 border-black pt-8 mt-8 text-center">
+      <div className="border-t-2 border-black dark:border-white pt-8 mt-8 text-center">
         <div className="flex gap-6 justify-center">
-          <a href="/aviso-legal" className="font-mono text-[9px] tracking-widest uppercase text-gray-600 hover:text-black transition-colors">
+          <a href="/aviso-legal" className="font-mono text-[9px] tracking-widest uppercase text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">
             AVISO LEGAL
           </a>
-          <a href="/privacidad" className="font-mono text-[9px] tracking-widest uppercase text-gray-600 hover:text-black transition-colors">
+          <a href="/privacidad" className="font-mono text-[9px] tracking-widest uppercase text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">
             PRIVACIDAD
           </a>
-          <a href="/cookies" className="font-mono text-[9px] tracking-widest uppercase text-gray-600 hover:text-black transition-colors">
+          <a href="/cookies" className="font-mono text-[9px] tracking-widest uppercase text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">
             COOKIES
           </a>
         </div>
@@ -692,7 +730,7 @@ export default function App() {
   
   // Si no, mostrar la home normal
   return (
-    <div className="min-h-screen bg-white selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-white dark:bg-zinc-950 selection:bg-blue-600 selection:text-white">
       <Nav />
       <Hero />
       <CaseStudy />

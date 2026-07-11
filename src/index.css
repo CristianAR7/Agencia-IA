@@ -18,6 +18,12 @@ body {
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  transition: background-color .3s ease, color .3s ease;
+}
+
+html.dark body {
+  background-color: #0a0a0a;
+  color: #ffffff;
 }
 
 #root { 
@@ -47,4 +53,56 @@ body {
 ::selection { 
   background: #3b82f6; 
   color: #fff; 
+}
+
+
+html.dark ::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #ffffff;
+}
+
+/* ── THEME TOGGLE EFFECT (View Transitions API) ─────────────── */
+html.vt-active *, html.vt-active body {
+  transition: none !important;
+}
+
+::view-transition-group(root) {
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+::view-transition-new(root) {
+  mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="white"/></svg>') center / 0 no-repeat;
+  animation: reveal-scale 1s both;
+}
+
+::view-transition-old(root),
+.dark::view-transition-old(root) {
+  animation: none;
+  z-index: -1;
+}
+
+::view-transition-image-pair(root) {
+  isolation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+  display: block;
+}
+
+@keyframes reveal-scale {
+  to { mask-size: 300vmax; }
+}
+
+/* ── Hero stroke + transiciones de color ────────────────────── */
+.hero-stroke { -webkit-text-stroke: 2px black; }
+.dark .hero-stroke { -webkit-text-stroke: 2px white; }
+
+nav, section, footer, div, a, button, input, textarea, select, span, p, h1, h2, h3, blockquote, li {
+  transition-property: background-color, border-color, color;
+  transition-duration: .3s;
 }
