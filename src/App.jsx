@@ -4,6 +4,7 @@ import ChatWidget from './components/ChatWidget'
 import Cookies from './pages/cookies';
 import Privacidad from './pages/privacidad';
 import AvisoLegal from './pages/aviso-legal';
+import BasesSorteo from './pages/bases-sorteo';
 import axios from 'axios'
 import {
   Workflow, Monitor, Database,
@@ -727,6 +728,7 @@ export default function App() {
   if (path === '/cookies') return <Cookies />;
   if (path === '/privacidad') return <Privacidad />;
   if (path === '/aviso-legal') return <AvisoLegal />;
+  if (path === '/bases-sorteo') return <BasesSorteo />;
   
   // Si no, mostrar la home normal
   return (
